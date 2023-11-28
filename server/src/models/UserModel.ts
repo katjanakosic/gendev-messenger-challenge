@@ -1,5 +1,5 @@
 import * as mongoose from "mongoose"
-import bcrypt from "bcrypt";
+import bcrypt from "bcrypt"
 
 export enum UserTypeEnum {
   CUSTOMER = "customer",
@@ -37,14 +37,13 @@ const userModel = new mongoose.Schema({
   },
 })
 
-
 userModel.pre("save", async function (next) {
   if (!this.isModified) {
     next()
   }
 
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
+  const salt = await bcrypt.genSalt(10)
+  this.password = await bcrypt.hash(this.password, salt)
 })
 
 export const User = mongoose.model("User", userModel)

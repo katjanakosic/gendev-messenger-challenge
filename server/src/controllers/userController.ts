@@ -1,12 +1,21 @@
 import asyncHandler from "express-async-handler"
 import { Request, Response } from "express"
 import { User } from "../models/UserModel"
-import {generateToken} from "../config/generateToken"
+import { generateToken } from "../config/generateToken"
 import bcrypt from "bcrypt"
 
 export const registerUser = asyncHandler(
   async (req: Request, res: Response) => {
-    const { name, email, password, address, phone_number, user_type } = req.body
+    const {
+      name,
+      email,
+      password,
+      address,
+      phone_number,
+      user_type,
+      url,
+      pfp,
+    } = req.body
 
     if (
       !name ||
@@ -32,7 +41,9 @@ export const registerUser = asyncHandler(
       password,
       address,
       phone_number,
+      url,
       user_type,
+      pfp,
     })
 
     if (user) {
