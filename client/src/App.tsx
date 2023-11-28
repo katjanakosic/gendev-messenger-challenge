@@ -1,4 +1,5 @@
 import "./App.css"
+import { useState } from "react"
 import ConversationView from "./views/ConversationView"
 import { Route, Routes } from "react-router-dom"
 import { Box } from "@chakra-ui/react"
