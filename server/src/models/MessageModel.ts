@@ -1,10 +1,21 @@
-import * as mongoose from "mongoose";
+import * as mongoose from "mongoose"
 
 export enum MessageTypeEnum {
-  QUOTE_OFFER,
-  REJECT_QUOTE_MESSAGE,
-  ACCEPT_QUOTE_MESSAGE,
-  STANDARD_MESSAGE,
+  QUOTE_OFFER = "quote_offer",
+  REJECT_QUOTE_MESSAGE = "reject_quote_offer",
+  ACCEPT_QUOTE_MESSAGE = "accept_quote_offer",
+  STANDARD_MESSAGE = "standard_message",
+}
+
+export interface MessageDocument extends mongoose.Document {
+  conversation_id: mongoose.ObjectId
+  message_type: string
+  text: string
+  sender_type: string
+  read_at: Date
+  created_at: Date
+  updated_at: Date
+  hidden_at?: Date
 }
 
 const messageModel = new mongoose.Schema({
@@ -14,7 +25,7 @@ const messageModel = new mongoose.Schema({
     ref: "Conversation",
   },
   message_type: { type: mongoose.Schema.Types.String, required: true },
-  text: { type: mongoose.Schema.Types.String },
+  text: { type: mongoose.Schema.Types.String, required: true },
   sender_type: {
     type: mongoose.Schema.Types.String,
     enum: Object.values(MessageTypeEnum),
@@ -24,8 +35,6 @@ const messageModel = new mongoose.Schema({
   created_at: { type: mongoose.Schema.Types.Date, required: true },
   updated_at: { type: mongoose.Schema.Types.Date, required: true },
   hidden_at: { type: mongoose.Schema.Types.Date, required: false },
-});
+})
 
-const Message = mongoose.model("Message", messageModel);
-
-export default Message;
+export const Message = mongoose.model("Message", messageModel)

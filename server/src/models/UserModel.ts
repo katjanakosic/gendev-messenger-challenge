@@ -1,32 +1,50 @@
-import * as mongoose from "mongoose";
+import * as mongoose from "mongoose"
+import bcrypt from "bcrypt";
 
 export enum UserTypeEnum {
   CUSTOMER = "customer",
   SERVICE_PROVIDER = "service provider",
 }
 
-const userModel = new mongoose.Schema(
-  {
-    name: { type: mongoose.Schema.Types.String, required: true },
-    email: { type: mongoose.Schema.Types.String, required: true },
-    password: { type: mongoose.Schema.Types.String, required: true },
-    user_type: {
-      type: mongoose.Schema.Types.String,
-      enum: Object.values(UserTypeEnum),
-      required: true,
-    },
-    pfp: {
-      type: mongoose.Schema.Types.String,
-      required: false,
-      default:
-        "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
-    },
+export interface UserDocument extends mongoose.Document {
+  name: string
+  email: string
+  password: string
+  address: string
+  phone_number: string
+  url?: string
+  user_type: string
+  pfp?: string
+}
+
+const userModel = new mongoose.Schema({
+  name: { type: mongoose.Schema.Types.String, required: true },
+  email: { type: mongoose.Schema.Types.String, required: true, unique: true },
+  password: { type: mongoose.Schema.Types.String, required: true },
+  address: { type: mongoose.Schema.Types.String, required: true },
+  phone_number: { type: mongoose.Schema.Types.String, required: true },
+  url: { type: mongoose.Schema.Types.String, required: false },
+  user_type: {
+    type: mongoose.Schema.Types.String,
+    enum: Object.values(UserTypeEnum),
+    required: true,
   },
-  {
-    timestamps: true,
+  pfp: {
+    type: mongoose.Schema.Types.String,
+    required: false,
+    default:
+      "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
+  },
+})
+
+
+userModel.pre("save", async function (next) {
+  if (!this.isModified) {
+    next()
   }
-);
 
-const User = mongoose.model("User", userModel);
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+})
 
-export default User;
+export const User = mongoose.model("User", userModel)
