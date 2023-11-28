@@ -20,8 +20,12 @@ app.use("/api/user", userRoutes)
 app.use(notFound)
 app.use(errorHandler)
 
+app.delete("/api/user/:id", (req: Request, res: Response) => {
+  res.send("Deleted")
+})
+
 const PORT = process.env.PORT || 3001
 
 app.listen(PORT, () => {
-  console.log(`Server started on PORT ${PORT}`)
+  console.log(`Server running on port ${PORT}`)
 })
