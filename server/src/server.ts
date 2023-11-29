@@ -17,7 +17,7 @@ app.get("/", (req: Request, res: Response) => {
 })
 
 app.use("/api/user", userRoutes)
-app.use("/api/chat", conversationRoutes)
+app.use("/api/conversation", conversationRoutes)
 
 app.use(notFound)
 app.use(errorHandler)
