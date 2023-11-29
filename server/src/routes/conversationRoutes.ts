@@ -1,6 +1,6 @@
 import express from "express"
 import { protect } from "../middleware/authHandler"
-import { createConversation, getAllConversations } from "src/controllers/conversationController"
+import { createConversation, getAllConversations } from "../controllers/conversationController"
 
 const router = express.Router()
 
