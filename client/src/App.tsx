@@ -1,8 +1,8 @@
 import { useState } from "react"
 import "./App.css"
 import Homepage from "./views/HomepageView"
-import { Route, Routes } from "react-router-dom"
 import ConversationView from "./views/ConversationView"
+import { Route, Routes } from "react-router-dom"
 
 function App() {
   return (
@@ -10,12 +10,12 @@ function App() {
       style={{
         background: "linear-gradient(#dab3e8, #bf77d9)",
         width: "100%",
-        height: "114vh",
+        height: "100vh",
       }}
     >
       <Routes>
         <Route path="/" element={<Homepage />} />
-        <Route path="/conversations" element={<ConversationView />} />
+        <Route path="/chats" element={<ConversationView />} />
       </Routes>
     </div>
   )

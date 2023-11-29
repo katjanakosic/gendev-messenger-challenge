@@ -157,7 +157,7 @@ export const SideDrawer = () => {
 
         <Box display="flex" width="33%" justifyContent="center">
           <Text fontSize="3xl" fontFamily="Work sans">
-            CHAT24
+            Chat24
           </Text>
         </Box>
         <Box display="flex" justifyContent="end" width="33%">
