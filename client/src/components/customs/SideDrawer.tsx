@@ -26,10 +26,10 @@ import { ProfileModal } from "./ProfileModal"
 import { useNavigate } from "react-router-dom"
 import { useToast } from "@chakra-ui/react"
 import axios from "axios"
+import ConversationLoading from "../ConversationLoading"
 import UserListItem from "../userAvatar/UserListItem"
 import { UserDto, UserTypeEnum } from "../../types/UserDto"
 import { ConversationState } from "../../context/ConversationContextProvider"
-import ConversationLoading from "../ConversationLoading"
 
 export const SideDrawer = () => {
   const [customer_name, setCustomerName] = useState("")
@@ -156,17 +156,14 @@ export const SideDrawer = () => {
         </Box>
 
         <Box display="flex" width="33%" justifyContent="center">
-          <Text fontSize="2xl" fontFamily="Work sans">
+          <Text fontSize="3xl" fontFamily="Work sans">
             CHAT24
           </Text>
         </Box>
         <Box display="flex" justifyContent="end" width="33%">
           <Menu>
             <MenuButton p={1}>
-              {/* <NotificationBadge
-                count={notification.length}
-                effect={Effect.SCALE}
-              /> */}
+              {}
               <BellIcon fontSize="2xl" m={1} />
             </MenuButton>
             {}
