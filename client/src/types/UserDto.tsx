@@ -4,6 +4,7 @@ export enum UserTypeEnum {
 }
 
 export type UserDto = {
+  _id: string
   name: string
   email: string
   password: string
@@ -11,5 +12,7 @@ export type UserDto = {
   phone_number: string
   url?: string
   user_type: string
-  pfp?: string
+  pfp: string
+  ratings: number[]
+  token: string
 }

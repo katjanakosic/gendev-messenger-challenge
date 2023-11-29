@@ -15,6 +15,7 @@ export interface UserDocument extends mongoose.Document {
   url?: string
   user_type: string
   pfp?: string
+  ratings: number[]
 }
 
 const userModel = new mongoose.Schema({
@@ -32,9 +33,8 @@ const userModel = new mongoose.Schema({
   pfp: {
     type: mongoose.Schema.Types.String,
     required: false,
-    default:
-      "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
   },
+  ratings: { type: [mongoose.Schema.Types.Number], required: true },
 })
 
 userModel.pre("save", async function (next) {

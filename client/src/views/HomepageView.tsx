@@ -41,7 +41,7 @@ function HomepageView() {
           fontWeight="bold"
           color="blueviolet"
         >
-          Chat24
+          CHAT24
         </Text>
       </Box>
       <Box

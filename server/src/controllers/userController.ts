@@ -1,8 +1,8 @@
 import asyncHandler from "express-async-handler"
 import { Request, Response } from "express"
+import { User } from "../models/UserModel"
 import { generateToken } from "../config/generateToken"
 import bcrypt from "bcrypt"
-import { User } from "src/models/UserModel"
 
 export const registerUser = asyncHandler(
   async (req: Request, res: Response) => {
@@ -49,9 +49,10 @@ export const registerUser = asyncHandler(
       password,
       address,
       phone_number,
-      pfp,
       user_type,
       url,
+      pfp,
+      ratings: [],
     })
 
     console.log("User created")
@@ -65,6 +66,8 @@ export const registerUser = asyncHandler(
         address: user.address,
         phone_number: user.phone_number,
         user_type: user.user_type,
+        pfp: user.pfp,
+        ratings: user.ratings,
         token: generateToken(user._id),
       })
     } else {
@@ -91,12 +94,16 @@ export const authUser = asyncHandler(async (req: Request, res: Response) => {
       address: user.address,
       phone_number: user.phone_number,
       user_type: user.user_type,
+      pfp: user.pfp,
+      ratings: user.ratings,
       token: generateToken(user._id),
     })
   } else {
     res.status(400)
     throw new Error("Invalid e-mail or password.")
   }
+
+  console.log("End of authUser")
 })
 
 interface User {
@@ -104,7 +111,7 @@ interface User {
 }
 
 export const allUsers = asyncHandler(async (req: Request, res: Response) => {
-  const keyword = req.query.search
+  const db_query = req.query.search
     ? {
         $or: [
           { name: { $regex: req.query.search, $options: "i" } },
@@ -113,7 +120,7 @@ export const allUsers = asyncHandler(async (req: Request, res: Response) => {
       }
     : {}
 
-  const users = await User.find(keyword).find({
+  const users = await User.find(db_query).find({
     _id: { $ne: (req.user as User).id },
   })
   res.send(users)

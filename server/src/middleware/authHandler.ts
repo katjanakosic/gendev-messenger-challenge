@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken"
+import { User } from "../models/UserModel"
 import asyncHandler from "express-async-handler"
 import { NextFunction, Request, Response } from "express"
 import { Document } from "mongoose"
-import { User } from "src/models/UserModel"
 
 interface JwtPayload {
   id: string

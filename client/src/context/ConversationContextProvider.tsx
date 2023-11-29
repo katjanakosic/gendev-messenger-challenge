@@ -44,6 +44,8 @@ export function ConversationContextProvider(props: {
       setConversations,
       fetchConversations,
       setFetchConversations,
+      user,
+      setUser,
     }
   }, [
     selectedConversation,
@@ -51,6 +53,7 @@ export function ConversationContextProvider(props: {
     // setNotification,
     conversations,
     fetchConversations,
+    user,
   ])
 
   return (
@@ -58,4 +61,8 @@ export function ConversationContextProvider(props: {
       {children}
     </ConversationContext.Provider>
   )
+}
+
+export const ConversationState = () => {
+  return React.useContext(ConversationContext)
 }

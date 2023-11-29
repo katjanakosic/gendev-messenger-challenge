@@ -7,11 +7,11 @@ import { ChakraProvider } from "@chakra-ui/react"
 import { ConversationContextProvider } from "./context/ConversationContextProvider.tsx"
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <ConversationContextProvider>
-    <BrowserRouter>
-      <ChakraProvider>
+  <BrowserRouter>
+    <ChakraProvider>
+      <ConversationContextProvider>
         <App />
-      </ChakraProvider>
-    </BrowserRouter>
-  </ConversationContextProvider>
+      </ConversationContextProvider>
+    </ChakraProvider>
+  </BrowserRouter>
 )

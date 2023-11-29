@@ -8,6 +8,7 @@ export enum StateEnum {
 }
 
 export type ConversationDto = {
+  _id: string
   customer_name: string
   service_provider_name: string
   state: string

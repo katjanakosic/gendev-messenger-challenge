@@ -8,6 +8,7 @@ export enum MessageTypeEnum {
 }
 
 export type MessageDto = {
+  _id: string
   conversation_id: ConversationDto
   message_type: string
   text: string

@@ -1,6 +1,6 @@
 import asyncHandler from "express-async-handler"
 import { Request, Response } from "express"
-import { Conversation, StateEnum } from "src/models/ConversationModel"
+import { Conversation, StateEnum } from "../models/ConversationModel"
 
 export const createConversation = asyncHandler(async (req: Request, res: Response) => {
   const {

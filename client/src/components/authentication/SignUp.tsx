@@ -13,6 +13,7 @@ import React, { useState } from "react"
 import axios from "axios"
 import { useToast } from "@chakra-ui/toast"
 import { useNavigate } from "react-router-dom"
+import { ConversationState } from "../../context/ConversationContextProvider"
 
 //TODO: Implement user type selection with a picker for 'customer' or 'service provider' which are both required fields
 
@@ -31,6 +32,8 @@ export const SignUp = () => {
   const [picLoading, setPicLoading] = useState(false)
   const [userType, setUserType] = useState("customer")
   const [url, setUrl] = useState("")
+
+  const { setUser } = ConversationState()
 
   const handleClick = () => setShow(!show)
 
@@ -126,7 +129,7 @@ export const SignUp = () => {
     try {
       const config = {
         headers: {
-          "Content-Type": "application/json",
+          "Content-type": "application/json",
         },
       }
       const { data } = await axios.post(
@@ -135,12 +138,11 @@ export const SignUp = () => {
           name: name,
           email: email,
           password: password,
-          confirmPassword: confirmPassword,
           address: address,
           phone_number: phone_number,
-          pfp: pfp,
           user_type: userType,
           url: url,
+          pfp: pfp,
         },
         config
       )
@@ -152,7 +154,7 @@ export const SignUp = () => {
         isClosable: true,
         position: "bottom",
       })
-
+      setUser(data)
       localStorage.setItem("userInfo", JSON.stringify(data))
       setPicLoading(false)
       navigate("/conversations")

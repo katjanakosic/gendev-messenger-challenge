@@ -6,16 +6,18 @@ import { useState } from "react"
 import axios from "axios"
 import { useToast } from "@chakra-ui/react"
 import { useNavigate } from "react-router-dom"
+import { ConversationState } from "../../context/ConversationContextProvider"
 
 export const Login = () => {
   const handleClick = () => setShow(!show)
   const toast = useToast()
   const navigate = useNavigate()
+  const { setUser } = ConversationState()
 
-  const [show, setShow] = useState<any>(false)
-  const [email, setEmail] = useState<any>()
-  const [password, setPassword] = useState<any>()
-  const [loading, setLoading] = useState<any>(false)
+  const [show, setShow] = useState(false)
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const submitHandler = async () => {
     setLoading(true)
@@ -34,11 +36,11 @@ export const Login = () => {
     try {
       const config = {
         headers: {
-          "Content-Type": "application/json",
+          "Content-type": "application/json",
         },
       }
 
-      const data = await axios.post(
+      const { data } = await axios.post(
         "/api/user/login",
         { email, password },
         config
@@ -51,7 +53,7 @@ export const Login = () => {
         isClosable: true,
         position: "bottom",
       })
-
+      setUser(data)
       localStorage.setItem("userInfo", JSON.stringify(data))
       setLoading(false)
       navigate("/conversations")

@@ -2,8 +2,8 @@ import express, { Request, Response } from "express"
 import * as dotenv from "dotenv"
 import connectDB from "./config/db"
 import userRoutes from "./routes/userRoutes"
-import conversationRoutes from "./routes/conversationRoutes"
 import { errorHandler, notFound } from "./middleware/errorHandler"
+import conversationRoutes from "./routes/conversationRoutes"
 
 dotenv.config()
 connectDB()
