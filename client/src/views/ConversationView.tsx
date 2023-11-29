@@ -4,7 +4,7 @@ import React, { useEffect } from "react"
 
 const ConversationView = () => {
 
-  return <>ChatView</>
+  return <>ConversationView</>
 }
 
 export default ConversationView

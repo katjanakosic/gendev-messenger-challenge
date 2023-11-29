@@ -9,7 +9,7 @@ function App() {
     <div style={{background: "linear-gradient(#dab3e8, #bf77d9)", width: "100%", height: "114vh"}}>
     <Routes>
       <Route path="/" element={<Homepage />} />
-      <Route path="/chats" element={<ConversationView />} />
+      <Route path="/conversations" element={<ConversationView />} />
     </Routes>
     </div>
   )
