@@ -8,8 +8,14 @@ import {
   VStack,
 } from "@chakra-ui/react"
 import React, { useState } from "react"
+import axios from "axios"
+import { useToast } from "@chakra-ui/toast"
+
+//TODO: Implement user type selection with a picker for 'customer' or 'service provider' which are both required fields
 
 export const SignUp = () => {
+  const toast = useToast()
+
   const [show, setShow] = useState(false)
   const [name, setName] = useState<any>()
   const [email, setEmail] = useState<any>()
@@ -18,10 +24,86 @@ export const SignUp = () => {
   const [address, setAddress] = useState<any>()
   const [phone_number, setPhoneNumber] = useState<any>()
   const [pfp, setPfp] = useState<any>()
+  const [picLoading, setPicLoading] = useState(false)
 
   const handleClick = () => setShow(!show)
-  const postDetails = () => {}
-  const submitHandler = () => {}
+
+  const postDetails = (pics: FileList | null) => {
+    setPicLoading(true)
+
+    if (!pics || pics.length === 0) {
+      toast({
+        title: "Please select an image",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      })
+      setPicLoading(false)
+      return
+    }
+
+    const selectedFile = pics[0]
+
+    console.log(selectedFile)
+
+    if (
+      selectedFile.type === "image/jpeg" ||
+      selectedFile.type === "image/png"
+    ) {
+      const data = new FormData()
+      data.append("file", selectedFile)
+      data.append("upload_preset", "chat-app")
+      data.append("cloud_name", "dpq6lqjdw")
+
+      fetch("https://api.cloudinary.com/v1_1/dpq6lqjdw/image/upload", {
+        method: "post",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setPfp(data.url.toString())
+          console.log(data.url.toString())
+          setPicLoading(false)
+        })
+        .catch((err) => {
+          console.log(err)
+          setPicLoading(false)
+        })
+    } else {
+      toast({
+        title: "Please select an image",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      })
+      setPicLoading(false)
+      return
+    }
+  }
+
+  const submitHandler = async () => {
+    setPicLoading(true)
+    if (
+      !name ||
+      !email ||
+      !password ||
+      !confirmPassword ||
+      !address ||
+      !phone_number
+    ) {
+      toast({
+        title: "Please fill out all fields",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      })
+      setPicLoading(false)
+      return
+    }
+  }
 
   return (
     <VStack spacing="5px">
@@ -90,11 +172,12 @@ export const SignUp = () => {
           p={1.5}
           accept="image/*"
           placeholder="Please upload a profile picture"
-          onChange={(e) => postDetails(/* e.target.files[0] */)}
+          onChange={(e) => postDetails(e.target.files)}
         />
       </FormControl>
       <Button
         colorScheme="purple"
+        isLoading={picLoading}
         width="100%"
         style={{ marginTop: "15" }}
         onClick={submitHandler}
