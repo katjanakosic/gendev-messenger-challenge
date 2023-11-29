@@ -1,6 +1,6 @@
 import asyncHandler from "express-async-handler"
 import { Request, Response } from "express"
-import { User } from "../models/UserModel"
+import { User, UserTypeEnum } from "../models/UserModel"
 import { generateToken } from "../config/generateToken"
 import bcrypt from "bcrypt"
 
@@ -110,15 +110,20 @@ interface User {
   id: string
 }
 
-export const allUsers = asyncHandler(async (req: Request, res: Response) => {
+export const getServiceProviders = asyncHandler(async (req: Request, res: Response) => {
   const db_query = req.query.search
-    ? {
-        $or: [
-          { name: { $regex: req.query.search, $options: "i" } },
-          { email: { $regex: req.query.search, $options: "i" } },
-        ],
-      }
-    : {}
+  ? {
+      $and: [
+        {
+          $or: [
+            { name: { $regex: req.query.search, $options: "i" } },
+            { email: { $regex: req.query.search, $options: "i" } },
+          ],
+        },
+        { user_type: UserTypeEnum.SERVICE_PROVIDER },
+      ],
+    }
+  : { user_type: UserTypeEnum.SERVICE_PROVIDER };
 
   const users = await User.find(db_query).find({
     _id: { $ne: (req.user as User).id },
