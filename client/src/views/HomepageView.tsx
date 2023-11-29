@@ -11,8 +11,17 @@ import {
 import React from "react"
 import { Login } from "../components/authentication/Login"
 import { SignUp } from "../components/authentication/SignUp"
+import { useNavigate } from "react-router-dom"
 
 function HomepageView() {
+  const navigate = useNavigate()
+  React.useEffect(() => {
+    const userInfoString = localStorage.getItem("userInfo")
+
+    if (userInfoString) {
+      navigate("/conversations")
+    }
+  }, [navigate])
   //Container helps with responsive design
   return (
     <Container maxW="xl" centerContent>
@@ -26,7 +35,12 @@ function HomepageView() {
         borderRadius="lg"
         borderWidth="1px"
       >
-        <Text fontSize="4xl" fontFamily="Work sans">
+        <Text
+          fontSize="4xl"
+          fontFamily="Work sans"
+          fontWeight="bold"
+          color="blueviolet"
+        >
           Chat24
         </Text>
       </Box>
@@ -45,14 +59,10 @@ function HomepageView() {
           </TabList>
           <TabPanels>
             <TabPanel>
-              <Login>
-
-              </Login>
+              <Login />
             </TabPanel>
             <TabPanel>
-              <SignUp>
-
-              </SignUp>
+              <SignUp />
             </TabPanel>
           </TabPanels>
         </Tabs>

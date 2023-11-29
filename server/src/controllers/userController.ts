@@ -1,15 +1,22 @@
 import asyncHandler from "express-async-handler"
 import { Request, Response } from "express"
-import { User } from "../models/UserModel"
 import { generateToken } from "../config/generateToken"
 import bcrypt from "bcrypt"
-import { connect } from "http2"
+import { User } from "src/models/UserModel"
 
 export const registerUser = asyncHandler(
   async (req: Request, res: Response) => {
     console.log("In registerUser")
-    const { name, email, password, address, phone_number, user_type, url, pfp } =
-      req.body
+    const {
+      name,
+      email,
+      password,
+      address,
+      phone_number,
+      user_type,
+      url,
+      pfp,
+    } = req.body
 
     console.log("Body")
     console.log(req.body)
@@ -90,4 +97,24 @@ export const authUser = asyncHandler(async (req: Request, res: Response) => {
     res.status(400)
     throw new Error("Invalid e-mail or password.")
   }
+})
+
+interface User {
+  id: string
+}
+
+export const allUsers = asyncHandler(async (req: Request, res: Response) => {
+  const keyword = req.query.search
+    ? {
+        $or: [
+          { name: { $regex: req.query.search, $options: "i" } },
+          { email: { $regex: req.query.search, $options: "i" } },
+        ],
+      }
+    : {}
+
+  const users = await User.find(keyword).find({
+    _id: { $ne: (req.user as User).id },
+  })
+  res.send(users)
 })

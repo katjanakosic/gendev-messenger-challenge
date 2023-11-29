@@ -5,16 +5,67 @@ import { VStack } from "@chakra-ui/layout"
 import { useState } from "react"
 import axios from "axios"
 import { useToast } from "@chakra-ui/react"
+import { useNavigate } from "react-router-dom"
 
 export const Login = () => {
-  const [show, setShow] = useState<any>(false)
   const handleClick = () => setShow(!show)
   const toast = useToast()
+  const navigate = useNavigate()
+
+  const [show, setShow] = useState<any>(false)
   const [email, setEmail] = useState<any>()
   const [password, setPassword] = useState<any>()
   const [loading, setLoading] = useState<any>(false)
 
-  const submitHandler = async () => {}
+  const submitHandler = async () => {
+    setLoading(true)
+    if (!email || !password) {
+      toast({
+        title: "Please fill all the fields",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      })
+      setLoading(false)
+      return
+    }
+
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+
+      const data = await axios.post(
+        "/api/user/login",
+        { email, password },
+        config
+      )
+
+      toast({
+        title: "Login Successful",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      })
+
+      localStorage.setItem("userInfo", JSON.stringify(data))
+      setLoading(false)
+      navigate("/conversations")
+    } catch (error: any) {
+      toast({
+        title: error,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      })
+      setLoading(false)
+    }
+  }
 
   return (
     <VStack spacing="10px">

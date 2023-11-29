@@ -15,6 +15,7 @@ export interface ConversationDocument extends mongoose.Document {
   deleted_at?: Date
   customer_id: mongoose.ObjectId
   service_provider_id: mongoose.ObjectId
+  latest_message?: mongoose.ObjectId
 }
 
 const conversationModel = new mongoose.Schema({
@@ -43,6 +44,11 @@ const conversationModel = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
+  },
+  latest_message: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Message",
+    required: false,
   },
 })
 

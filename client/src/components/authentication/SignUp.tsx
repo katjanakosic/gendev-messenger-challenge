@@ -154,9 +154,8 @@ export const SignUp = () => {
       })
 
       localStorage.setItem("userInfo", JSON.stringify(data))
-      console.log("#########", data)
       setPicLoading(false)
-      //navigate("/chats")
+      navigate("/conversations")
     } catch (error: any) {
       toast({
         title: error,

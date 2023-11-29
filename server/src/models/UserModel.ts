@@ -3,7 +3,7 @@ import bcrypt from "bcrypt"
 
 export enum UserTypeEnum {
   CUSTOMER = "customer",
-  SERVICE_PROVIDER = "service provider",
+  SERVICE_PROVIDER = "service_provider",
 }
 
 export interface UserDocument extends mongoose.Document {

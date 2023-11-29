@@ -2,6 +2,7 @@ import express, { Request, Response } from "express"
 import * as dotenv from "dotenv"
 import connectDB from "./config/db"
 import userRoutes from "./routes/userRoutes"
+import conversationRoutes from "./routes/conversationRoutes"
 import { errorHandler, notFound } from "./middleware/errorHandler"
 
 dotenv.config()
@@ -16,6 +17,7 @@ app.get("/", (req: Request, res: Response) => {
 })
 
 app.use("/api/user", userRoutes)
+app.use("/api/chat", conversationRoutes)
 
 app.use(notFound)
 app.use(errorHandler)
