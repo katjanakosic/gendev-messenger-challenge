@@ -27,7 +27,7 @@ import { useNavigate } from "react-router-dom"
 import { useToast } from "@chakra-ui/react"
 import axios from "axios"
 import UserListItem from "../userAvatar/UserListItem"
-import { UserDto } from "../../types/UserDto"
+import { UserDto, UserTypeEnum } from "../../types/UserDto"
 import { ConversationState } from "../../context/ConversationContextProvider"
 import ConversationLoading from "../ConversationLoading"
 
@@ -142,18 +142,25 @@ export const SideDrawer = () => {
         p="5px 10px 5px 10px"
         borderWidth="5px"
       >
-        <Tooltip label="Search users to Conversation" hasArrow placement="bottom">
-          <Button variant="ghost" onClick={onOpen}>
-            <Search2Icon />
-            <Text display={{ base: "none", md: "flex" }} px="4">
-              Search user
-            </Text>
-          </Button>
-        </Tooltip>
-        <Text fontSize="2xl" fontFamily="Work sans">
-          CHAT24
-        </Text>
-        <div>
+        <Box display="flex" width="33%" justifyContent="start">
+          {user?.user_type === UserTypeEnum.CUSTOMER && (
+            <Tooltip label="Search users to Conversation" hasArrow placement="bottom">
+              <Button variant="ghost" onClick={onOpen}>
+                <Search2Icon />
+                <Text display={{ base: "none", md: "flex" }} px="4">
+                  Search user
+                </Text>
+              </Button>
+            </Tooltip>
+          )}
+        </Box>
+
+        <Box display="flex" width="33%" justifyContent="center">
+          <Text fontSize="2xl" fontFamily="Work sans">
+            CHAT24
+          </Text>
+        </Box>
+        <Box display="flex" justifyContent="end" width="33%">
           <Menu>
             <MenuButton p={1}>
               {/* <NotificationBadge
@@ -164,6 +171,7 @@ export const SideDrawer = () => {
             </MenuButton>
             {}
           </Menu>
+
           <Menu>
             <MenuButton as={Button} bg="white" rightIcon={<ChevronDownIcon />}>
               <Avatar
@@ -181,7 +189,7 @@ export const SideDrawer = () => {
               <MenuItem onClick={logoutHandler}>Logout</MenuItem>
             </MenuList>
           </Menu>
-        </div>
+        </Box>
       </Box>
       <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
