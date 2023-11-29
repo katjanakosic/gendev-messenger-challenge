@@ -6,25 +6,31 @@ import {
   InputGroup,
   InputRightElement,
   VStack,
+  Select,
+  Text,
 } from "@chakra-ui/react"
 import React, { useState } from "react"
 import axios from "axios"
 import { useToast } from "@chakra-ui/toast"
+import { useNavigate } from "react-router-dom"
 
 //TODO: Implement user type selection with a picker for 'customer' or 'service provider' which are both required fields
 
 export const SignUp = () => {
   const toast = useToast()
+  const navigate = useNavigate()
 
   const [show, setShow] = useState(false)
-  const [name, setName] = useState<any>()
-  const [email, setEmail] = useState<any>()
-  const [password, setPassword] = useState<any>()
-  const [confirmPassword, setConfirmPassword] = useState<any>()
-  const [address, setAddress] = useState<any>()
-  const [phone_number, setPhoneNumber] = useState<any>()
-  const [pfp, setPfp] = useState<any>()
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [address, setAddress] = useState("")
+  const [phone_number, setPhoneNumber] = useState("")
+  const [pfp, setPfp] = useState("")
   const [picLoading, setPicLoading] = useState(false)
+  const [userType, setUserType] = useState("customer")
+  const [url, setUrl] = useState("")
 
   const handleClick = () => setShow(!show)
 
@@ -91,7 +97,8 @@ export const SignUp = () => {
       !password ||
       !confirmPassword ||
       !address ||
-      !phone_number
+      !phone_number ||
+      !userType
     ) {
       toast({
         title: "Please fill out all fields",
@@ -102,6 +109,64 @@ export const SignUp = () => {
       })
       setPicLoading(false)
       return
+    }
+
+    if (password !== confirmPassword) {
+      toast({
+        title: "Passwords do not match",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      })
+      setPicLoading(false)
+      return
+    }
+
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+      const { data } = await axios.post(
+        "/api/user/signup",
+        {
+          name: name,
+          email: email,
+          password: password,
+          confirmPassword: confirmPassword,
+          address: address,
+          phone_number: phone_number,
+          pfp: pfp,
+          user_type: userType,
+          url: url,
+        },
+        config
+      )
+
+      toast({
+        title: "Registration successful",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      })
+
+      localStorage.setItem("userInfo", JSON.stringify(data))
+      console.log("#########", data)
+      setPicLoading(false)
+      //navigate("/chats")
+    } catch (error: any) {
+      toast({
+        title: error,
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      })
+      setPicLoading(false)
     }
   }
 
@@ -175,6 +240,24 @@ export const SignUp = () => {
           onChange={(e) => postDetails(e.target.files)}
         />
       </FormControl>
+      <FormLabel alignSelf="start">I am a...</FormLabel>
+      <Select
+        defaultValue={userType}
+        value={userType}
+        onChange={(e) => setUserType(e.target.value)}
+      >
+        <option value="customer">Customer</option>
+        <option value="service_provider">Service Provider</option>
+      </Select>
+      {userType === "service_provider" && (
+        <FormControl id="url">
+          <FormLabel>URL</FormLabel>
+          <Input
+            placeholder="Please enter Your URL"
+            onChange={(e) => setUrl(e.target.value)}
+          />
+        </FormControl>
+      )}
       <Button
         colorScheme="purple"
         isLoading={picLoading}

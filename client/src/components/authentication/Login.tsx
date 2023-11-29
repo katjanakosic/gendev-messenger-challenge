@@ -1,18 +1,18 @@
-import { Button } from "@chakra-ui/button";
-import { FormControl, FormLabel } from "@chakra-ui/form-control";
-import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
-import { VStack } from "@chakra-ui/layout";
-import { useState } from "react";
-import axios from "axios";
-import { useToast } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/button"
+import { FormControl, FormLabel } from "@chakra-ui/form-control"
+import { Input, InputGroup, InputRightElement } from "@chakra-ui/input"
+import { VStack } from "@chakra-ui/layout"
+import { useState } from "react"
+import axios from "axios"
+import { useToast } from "@chakra-ui/react"
 
 export const Login = () => {
-  const [show, setShow] = useState<any>(false);
-  const handleClick = () => setShow(!show);
-  const toast = useToast();
-  const [email, setEmail] = useState<any>();
-  const [password, setPassword] = useState<any>();
-  const [loading, setLoading] = useState<any>(false);
+  const [show, setShow] = useState<any>(false)
+  const handleClick = () => setShow(!show)
+  const toast = useToast()
+  const [email, setEmail] = useState<any>()
+  const [password, setPassword] = useState<any>()
+  const [loading, setLoading] = useState<any>(false)
 
   const submitHandler = async () => {}
 
@@ -23,7 +23,7 @@ export const Login = () => {
         <Input
           value={email}
           type="email"
-          placeholder="Please enter Your Email Address"
+          placeholder="Please enter Your e-mail address"
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>
@@ -57,14 +57,12 @@ export const Login = () => {
         colorScheme="blue"
         width="100%"
         onClick={() => {
-          setEmail("guest@example.com");
-          setPassword("123456");
+          setEmail("guest@example.com")
+          setPassword("123456")
         }}
       >
         Get Guest User Credentials
       </Button>
     </VStack>
-  );
-};
-
-
+  )
+}
