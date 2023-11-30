@@ -71,17 +71,13 @@ export const createMessage = asyncHandler(
 
 export const getAllMessages = asyncHandler(
   async (req: Request, res: Response) => {
-    console.log("In getAllMessages")
     try {
-      console.log("In try")
       const conversationId = req.params.conversation_id
-      console.log("Conversation ID:", conversationId)
 
       const messages = await Message.find({
         conversation_id: req.params.conversation_id,
       })
 
-      console.log(messages)
 
       if (messages) {
         res.json(messages)

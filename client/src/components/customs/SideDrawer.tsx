@@ -91,25 +91,19 @@ export const SideDrawer = () => {
 
   //userID is id of the user to whom we want to send the message
   const accessConversation = async (user_id: string) => {
-    console.log(user_id)
-
     try {
-      console.log("Conversation")
       setLoadingConversation(true)
-      console.log("Loading Conversation")
       const config = {
         headers: {
           "Content-type": "application/json",
           Authorization: `Bearer ${user?.token}`,
         },
       }
-      console.log("Config")
       const { data } = await axios.post(
         "/api/conversation/",
         { otherUserId: user_id },
         config
       )
-      console.log("Data")
 
       //if Conversation is already present in the list then update the list
       if (!conversations.find((c) => c._id === data._id))
@@ -117,7 +111,6 @@ export const SideDrawer = () => {
       setSelectedConversation(data)
       setLoadingConversation(false)
       onClose()
-      console.log("Conversation")
     } catch (error: any) {
       toast({
         title: "Error fetching the Conversation",
@@ -128,7 +121,6 @@ export const SideDrawer = () => {
         position: "bottom-left",
       })
     }
-    console.log("Conversation error")
   }
 
   return (

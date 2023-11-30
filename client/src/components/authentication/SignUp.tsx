@@ -54,8 +54,6 @@ export const SignUp = () => {
 
     const selectedFile = pics[0]
 
-    console.log(selectedFile)
-
     if (
       selectedFile.type === "image/jpeg" ||
       selectedFile.type === "image/png"

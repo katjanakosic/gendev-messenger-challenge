@@ -6,7 +6,6 @@ import bcrypt from "bcrypt"
 
 export const registerUser = asyncHandler(
   async (req: Request, res: Response) => {
-    console.log("In registerUser")
     const {
       name,
       email,
@@ -18,8 +17,6 @@ export const registerUser = asyncHandler(
       pfp,
     } = req.body
 
-    console.log("Body")
-    console.log(req.body)
     if (
       !name ||
       !email ||
@@ -31,17 +28,14 @@ export const registerUser = asyncHandler(
       res.status(400)
       throw new Error("Please provide all fields")
     }
-    console.log("Data provided")
 
     const userExists = await User.findOne({ email })
-    console.log(userExists)
 
     if (userExists) {
       res.status(400)
       throw new Error("This user already exists")
     }
 
-    console.log("User exist")
 
     const user = await User.create({
       name,
@@ -55,8 +49,6 @@ export const registerUser = asyncHandler(
       ratings: [],
     })
 
-    console.log("User created")
-    console.log(user)
 
     if (user) {
       res.status(201).json({
@@ -78,15 +70,11 @@ export const registerUser = asyncHandler(
 )
 
 export const authUser = asyncHandler(async (req: Request, res: Response) => {
-  console.log("In authUser")
   const { email, password } = req.body
-  console.log("Data", email, password)
 
   const user = await User.findOne({ email })
-  console.log("User", user)
 
   if (user && (await bcrypt.compare(password, user.password))) {
-    console.log("Authenticated")
     res.json({
       _id: user._id,
       name: user.name,
@@ -103,7 +91,6 @@ export const authUser = asyncHandler(async (req: Request, res: Response) => {
     throw new Error("Invalid e-mail or password.")
   }
 
-  console.log("End of authUser")
 })
 
 interface User {
