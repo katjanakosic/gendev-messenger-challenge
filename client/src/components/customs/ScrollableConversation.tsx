@@ -4,7 +4,7 @@ import ScrollableFeed from "react-scrollable-feed"
 import { Box } from "@chakra-ui/react"
 import { ConversationState } from "../../context/ConversationContextProvider"
 
-export const ScrollableConversation = ({ messages }: { messages: MessageDto[] }) => {
+export const ScrollableConversation = ({ messages, isTyping }: { messages: MessageDto[], isTyping: boolean }) => {
   const { user } = ConversationState()
   return (
     <ScrollableFeed>
@@ -34,6 +34,18 @@ export const ScrollableConversation = ({ messages }: { messages: MessageDto[] })
             </Box>
           )
         })}
+      {isTyping && (
+        <Box
+          style={{
+            backgroundColor: "#e0e0e0",
+            borderRadius: "20px",
+            padding: "5px 15px",
+            width: "100px",
+          }}
+        >
+          Typing...
+        </Box>
+      )}
     </ScrollableFeed>
   )
 }

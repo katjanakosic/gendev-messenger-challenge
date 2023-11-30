@@ -11,7 +11,7 @@ export type ConversationDto = {
   _id: string
   customer_name: string
   service_provider_name: string
-  state: string
+  state: StateEnum
   created_at: Date
   updated_at: Date
   deleted_at?: Date

@@ -113,10 +113,10 @@ export const SideDrawer = () => {
       setSelectedConversation(data)
       setLoadingConversation(false)
       onClose()
-    } catch (error: any) {
+    } catch (error) {
       toast({
-        title: "Error fetching the conversation",
-        description: error.message,
+        title: "Error",
+        description: "Error fetching the conversation",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -138,7 +138,7 @@ export const SideDrawer = () => {
       >
         <Box display="flex" width="33%" justifyContent="start">
           {user?.user_type === UserTypeEnum.CUSTOMER && (
-            <Tooltip label="Search users to chat" hasArrow placement="bottom">
+            <Tooltip label="Search users to conversation" hasArrow placement="bottom">
               <Button variant="ghost" onClick={onOpen}>
                 <Search2Icon />
                 <Text display={{ base: "none", md: "flex" }} px="4">

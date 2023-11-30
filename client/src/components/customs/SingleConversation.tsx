@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from "react"
 import {
   Box,
+  Button,
   FormControl,
   IconButton,
   Input,
@@ -19,7 +20,7 @@ import axios from "axios"
 import { MessageDto, MessageTypeEnum } from "../../types/MessageDto"
 import "./styles.css"
 import io, { Socket } from "socket.io-client"
-import { ConversationDto } from "../../types/ConversationDto"
+import { ConversationDto, StateEnum } from "../../types/ConversationDto"
 import { ConversationState } from "../../context/ConversationContextProvider"
 
 const ENDPOINT = "http://localhost:3001"
@@ -181,6 +182,70 @@ export const SingleConversation = () => {
     })
   })
 
+  const handleAccept = async () => {
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }
+
+      const { data } = await axios.post(
+        "/api/message/accept",
+        {
+          conversation_id: selectedConversation?._id,
+        },
+        config
+      )
+
+      setMessages([...messages, data])
+      socket.emit("new message", data)
+      setSelectedConversation(data.conversation_id)
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to send the Message",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      })
+    }
+  }
+
+  const handleReject = async () => {
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }
+
+      const { data } = await axios.post(
+        "/api/message/reject",
+        {
+          conversation_id: selectedConversation?._id,
+        },
+        config
+      )
+
+      setMessages([...messages, data])
+      socket.emit("new message", data)
+      setSelectedConversation(data.conversation_id)
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to send the Message",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      })
+    }
+  }
+
   return (
     <>
       {selectedConversation ? (
@@ -236,22 +301,36 @@ export const SingleConversation = () => {
               />
             ) : (
               <Box className="messages">
-                <ScrollableConversation messages={messages} />
+                <ScrollableConversation messages={messages} isTyping={isTyping} />
               </Box>
             )}
             <FormControl onKeyDown={sendMessage} isRequired mt="3">
-              {isTyping && (
-                <Box
-                  style={{
-                    backgroundColor: "#ebebeb",
-                    borderRadius: "20px",
-                    padding: "5px 15px",
-                    maxWidth: "75%",
-                  }}
-                >
-                  Typing...
-                </Box>
-              )}
+              {user?.user_type === UserTypeEnum.CUSTOMER &&
+                selectedConversation.state === StateEnum.QUOTED && (
+                  <Box
+                    width="100%"
+                    display="flex"
+                    justifyContent="space-evenly"
+                    pb={2}
+                  >
+                    <Button
+                      background="green"
+                      color="white"
+                      _hover={{ opacity: "50%" }}
+                      onClick={handleAccept}
+                    >
+                      Accept offer
+                    </Button>
+                    <Button
+                      background="red"
+                      color="white"
+                      _hover={{ opacity: "50%" }}
+                      onClick={handleReject}
+                    >
+                      Reject offer
+                    </Button>
+                  </Box>
+                )}
               <Input
                 variant="filled"
                 bg="#E0E0E0"
