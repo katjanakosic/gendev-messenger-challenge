@@ -2,9 +2,11 @@ import { MessageDto } from "./MessageDto"
 import { UserDto } from "./UserDto"
 
 export enum StateEnum {
+  INITIATED = "initiated",
   QUOTED = "quoted",
   ACCEPTED = "accepted",
   REJECTED = "rejected",
+  COMPLETED = "completed",
 }
 
 export type ConversationDto = {

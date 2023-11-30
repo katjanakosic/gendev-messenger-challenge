@@ -178,6 +178,7 @@ export const SingleConversation = () => {
         }
       } else {
         setMessages([...messages, newMessageReceived])
+        setSelectedConversation(newMessageReceived.conversation_id)
       }
     })
   })
@@ -337,6 +338,10 @@ export const SingleConversation = () => {
                 placeholder="Enter a message.."
                 value={newMessage}
                 onChange={typingHandler}
+                disabled={
+                  selectedConversation.state === StateEnum.REJECTED ||
+                  selectedConversation.state === StateEnum.COMPLETED
+                }
               />
             </FormControl>
           </Box>

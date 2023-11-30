@@ -5,6 +5,7 @@ export enum StateEnum {
   QUOTED = "quoted",
   ACCEPTED = "accepted",
   REJECTED = "rejected",
+  COMPLETED = "completed",
 }
 
 export interface ConversationDocument extends mongoose.Document {
