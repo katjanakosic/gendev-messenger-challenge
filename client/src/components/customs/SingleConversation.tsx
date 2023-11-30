@@ -9,10 +9,19 @@ import {
   Spinner,
   Text,
   useToast,
+  Menu,
+  MenuList,
+  MenuButton,
 } from "@chakra-ui/react"
 import { Image } from "@chakra-ui/image"
 import chatting from "../../assets/Chat-amico.svg"
-import { ArrowBackIcon, EmailIcon, LinkIcon } from "@chakra-ui/icons"
+import {
+  ArrowBackIcon,
+  AttachmentIcon,
+  ChevronRightIcon,
+  EmailIcon,
+  LinkIcon,
+} from "@chakra-ui/icons"
 import { UserTypeEnum } from "../../types/UserDto"
 import { ScrollableConversation } from "./ScrollableConversation"
 import axios from "axios"
@@ -20,6 +29,7 @@ import { MessageDto, MessageTypeEnum } from "../../types/MessageDto"
 import "./styles.css"
 import io, { Socket } from "socket.io-client"
 import { ConversationDto, StateEnum } from "../../types/ConversationDto"
+import { StarRating } from "./StarRating"
 import { ConversationState } from "../../context/ConversationContextProvider"
 
 const ENDPOINT = "http://localhost:3001"
@@ -33,6 +43,7 @@ export const SingleConversation = () => {
   const [socketConnected, setSocketConnected] = useState(false)
   const [typing, setTyping] = useState(false)
   const [isTyping, setIsTyping] = useState(false)
+  const [rating, setRating] = useState(0)
 
   const toast = useToast()
 
@@ -280,6 +291,39 @@ export const SingleConversation = () => {
     }
   }
 
+  const handleRating = async () => {
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }
+
+      const { data } = await axios.post(
+        "/api/message/rate",
+        {
+          conversation_id: selectedConversation?._id,
+          rating: rating,
+        },
+        config
+      )
+
+      setMessages([...messages, data])
+      socket.emit("new message", data)
+      setSelectedConversation(data.conversation_id)
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to send the Message",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      })
+    }
+  }
+
   return (
     <>
       {selectedConversation ? (
@@ -329,6 +373,29 @@ export const SingleConversation = () => {
                       Complete
                     </Button>
                   )}
+                  <Menu>
+                    {selectedConversation.state === StateEnum.COMPLETED && (
+                      <MenuButton as={Button} mr={2}>
+                        Rate
+                      </MenuButton>
+                    )}
+                    <MenuList>
+                      <Box display="flex" justifyContent="space-evenly">
+                        <StarRating
+                          rating={rating}
+                          setRating={setRating}
+                          count={5}
+                          size={20}
+                        />
+                        <IconButton
+                          aria-label="Rate user"
+                          icon={<ChevronRightIcon />}
+                          onClick={handleRating}
+                        />
+                      </Box>
+                    </MenuList>
+                  </Menu>
+
                   <IconButton
                     mr={2}
                     aria-label="Visit Website"
@@ -423,17 +490,27 @@ export const SingleConversation = () => {
                     </Button>
                   </Box>
                 )}
-              <Input
-                variant="filled"
-                bg="#E0E0E0"
-                placeholder="Enter a message.."
-                value={newMessage}
-                onChange={typingHandler}
-                disabled={
-                  selectedConversation.state === StateEnum.REJECTED ||
-                  selectedConversation.state === StateEnum.COMPLETED
-                }
-              />
+              <Box display="flex">
+                <Input
+                  variant="filled"
+                  bg="#E0E0E0"
+                  placeholder="Enter a message.."
+                  value={newMessage}
+                  onChange={typingHandler}
+                  disabled={
+                    selectedConversation.state === StateEnum.REJECTED ||
+                    selectedConversation.state === StateEnum.COMPLETED ||
+                    selectedConversation.state === StateEnum.RATED
+                  }
+                />
+                <IconButton
+                  ml={2}
+                  aria-label="Attach files"
+                  icon={<AttachmentIcon />}
+                  onClick={() => {}}
+                  isDisabled={selectedConversation.state !== StateEnum.ACCEPTED}
+                />
+              </Box>
             </FormControl>
           </Box>
         </>

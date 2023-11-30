@@ -157,11 +157,7 @@ export const SideDrawer = () => {
         <Box display="flex" justifyContent="end" width="33%">
           <Menu>
             <MenuButton p={1}>
-              {/* <NotificationBadge
-                count={notification.length}
-                effect={Effect.SCALE}
-              /> */}
-              <BellIcon fontSize="2xl" m={1} />
+              <BellIcon fontSize="2xl" m={1} color={notifications.length > 0 ? "#f7df74" : "#000000"}/>
             </MenuButton>
             <MenuList pl={2}>
               {!notifications.length && "No new messages"}

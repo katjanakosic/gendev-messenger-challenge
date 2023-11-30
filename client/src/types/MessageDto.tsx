@@ -7,6 +7,7 @@ export enum MessageTypeEnum {
   ACCEPT_QUOTE_MESSAGE = "accept_quote_offer",
   STANDARD_MESSAGE = "standard_message",
   COMPLETE_MESSAGE = "complete_message",
+  RATE_MESSAGE = "rate_message",
 }
 
 export type MessageDto = {

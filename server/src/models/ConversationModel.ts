@@ -6,6 +6,7 @@ export enum StateEnum {
   ACCEPTED = "accepted",
   REJECTED = "rejected",
   COMPLETED = "completed",
+  RATED = "rated"
 }
 
 export interface ConversationDocument extends mongoose.Document {

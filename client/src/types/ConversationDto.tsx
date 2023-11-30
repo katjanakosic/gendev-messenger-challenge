@@ -7,6 +7,7 @@ export enum StateEnum {
   ACCEPTED = "accepted",
   REJECTED = "rejected",
   COMPLETED = "completed",
+  RATED = "rated",
 }
 
 export type ConversationDto = {
