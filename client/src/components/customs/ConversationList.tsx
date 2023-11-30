@@ -17,6 +17,13 @@ export const ConversationList = () => {
   } = ConversationState()
   const toast = useToast()
 
+  interface Conversation {
+    _id: string
+    latest_message?: {
+      timestamp: number
+    }
+  }
+
   const fetchConversations = async () => {
     try {
       const config = {
@@ -73,10 +80,14 @@ export const ConversationList = () => {
                 onClick={() => setSelectedConversation(conversation)}
                 cursor="pointer"
                 bg={
-                  selectedConversation?._id === conversation._id ? "#b281e3" : "#E8E8E8"
+                  selectedConversation?._id === conversation._id
+                    ? "#b281e3"
+                    : "#E8E8E8"
                 }
                 color={
-                  selectedConversation?._id === conversation._id ? "white" : "black"
+                  selectedConversation?._id === conversation._id
+                    ? "white"
+                    : "black"
                 }
                 px={3}
                 py={2}

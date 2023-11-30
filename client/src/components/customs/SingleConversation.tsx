@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react"
 import { Image } from "@chakra-ui/image"
 import chatting from "../../assets/Chat-amico.svg"
-import { ArrowBackIcon } from "@chakra-ui/icons"
+import { ArrowBackIcon, EmailIcon, LinkIcon } from "@chakra-ui/icons"
 import { UserTypeEnum } from "../../types/UserDto"
 import { ProfileModal } from "./ProfileModal"
 import { ScrollableConversation } from "./ScrollableConversation"
@@ -105,6 +105,7 @@ export const SingleConversation = () => {
         setNewMessage("")
         setMessages([...messages, data])
         setFetchAgain(!fetchAgain)
+        console.log(data)
         socket.emit("new message", data)
       } catch (error) {
         toast({
@@ -274,13 +275,51 @@ export const SingleConversation = () => {
                 ? selectedConversation.service_provider_name
                 : selectedConversation.customer_name}
             </Text>
-            <ProfileModal
-              user={
-                user?.user_type === UserTypeEnum.CUSTOMER
-                  ? selectedConversation.service_provider_id
-                  : selectedConversation.customer_id
-              }
-            />
+            <Box display="flex">
+              {user?.user_type === UserTypeEnum.CUSTOMER && (
+                <IconButton
+                  aria-label="Visit Website"
+                  icon={<LinkIcon />}
+                  onClick={() => {
+                    const websiteUrl =
+                      selectedConversation.service_provider_id.url
+
+                    if (websiteUrl) {
+                      const fullUrl = websiteUrl.startsWith("www")
+                        ? `https://${websiteUrl}`
+                        : websiteUrl.startsWith("http://") ||
+                          websiteUrl.startsWith("https://")
+                        ? websiteUrl
+                        : `http://${websiteUrl}`
+
+                      window.open(fullUrl)
+                    } else {
+                      console.error("Website URL is not available")
+                    }
+                  }}
+                />
+              )}
+              <IconButton
+                aria-label="Send Email"
+                icon={<EmailIcon />}
+                onClick={() => {
+                  window.open(
+                    `mailto: ${
+                      user?.user_type === UserTypeEnum.CUSTOMER
+                        ? selectedConversation.service_provider_id.email
+                        : selectedConversation.customer_id.email
+                    }`
+                  )
+                }}
+              />
+              <ProfileModal
+                user={
+                  user?.user_type === UserTypeEnum.CUSTOMER
+                    ? selectedConversation.service_provider_id
+                    : selectedConversation.customer_id
+                }
+              />
+            </Box>
           </Box>
           <Box
             display="flex"
@@ -303,10 +342,7 @@ export const SingleConversation = () => {
               />
             ) : (
               <Box className="messages">
-                <ScrollableConversation
-                  messages={messages}
-                  isTyping={isTyping}
-                />
+                <ScrollableConversation messages={messages} isTyping={isTyping} />
               </Box>
             )}
             <FormControl onKeyDown={sendMessage} isRequired mt="3">
