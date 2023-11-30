@@ -1,4 +1,5 @@
 import { ConversationDto } from "./ConversationDto"
+import { UserDto } from "./UserDto"
 
 export enum MessageTypeEnum {
   QUOTE_OFFER = "quote_offer",
@@ -13,8 +14,9 @@ export type MessageDto = {
   message_type: string
   text: string
   sender_type: string
-  read_at: Date
+  read_at?: Date
   created_at: Date
   updated_at: Date
   hidden_at?: Date
+  sender_id: UserDto
 }

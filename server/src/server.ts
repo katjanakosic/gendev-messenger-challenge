@@ -4,6 +4,7 @@ import connectDB from "./config/db"
 import userRoutes from "./routes/userRoutes"
 import { errorHandler, notFound } from "./middleware/errorHandler"
 import conversationRoutes from "./routes/conversationRoutes"
+import messageRoutes from "./routes/messageRoutes"
 
 dotenv.config()
 connectDB()
@@ -18,6 +19,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/user", userRoutes)
 app.use("/api/conversation", conversationRoutes)
+app.use("/api/message", messageRoutes)
 
 app.use(notFound)
 app.use(errorHandler)

@@ -1,4 +1,5 @@
 import * as mongoose from "mongoose"
+import { UserTypeEnum } from "./UserModel"
 
 export enum MessageTypeEnum {
   QUOTE_OFFER = "quote_offer",
@@ -12,10 +13,11 @@ export interface MessageDocument extends mongoose.Document {
   message_type: string
   text: string
   sender_type: string
-  read_at: Date
+  read_at?: Date
   created_at: Date
   updated_at: Date
   hidden_at?: Date
+  sender_id: mongoose.ObjectId
 }
 
 const messageModel = new mongoose.Schema({
@@ -24,17 +26,26 @@ const messageModel = new mongoose.Schema({
     required: true,
     ref: "Conversation",
   },
-  message_type: { type: mongoose.Schema.Types.String, required: true },
-  text: { type: mongoose.Schema.Types.String, required: true },
-  sender_type: {
+  message_type: {
     type: mongoose.Schema.Types.String,
     enum: Object.values(MessageTypeEnum),
     required: true,
   },
-  read_at: { type: mongoose.Schema.Types.Date, required: true },
+  text: { type: mongoose.Schema.Types.String, required: true },
+  sender_type: {
+    type: mongoose.Schema.Types.String,
+    enum: Object.values(UserTypeEnum),
+    required: true,
+  },
+  read_at: { type: mongoose.Schema.Types.Date, required: false },
   created_at: { type: mongoose.Schema.Types.Date, required: true },
   updated_at: { type: mongoose.Schema.Types.Date, required: true },
   hidden_at: { type: mongoose.Schema.Types.Date, required: false },
+  sender_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
+  },
 })
 
 export const Message = mongoose.model("Message", messageModel)
