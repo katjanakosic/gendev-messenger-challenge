@@ -26,10 +26,10 @@ import { ProfileModal } from "./ProfileModal"
 import { useNavigate } from "react-router-dom"
 import { useToast } from "@chakra-ui/react"
 import axios from "axios"
+import ConversationLoading from "../ConversationLoading"
 import UserListItem from "../userAvatar/UserListItem"
 import { UserDto, UserTypeEnum } from "../../types/UserDto"
 import { ConversationState } from "../../context/ConversationContextProvider"
-import ConversationLoading from "../ConversationLoading"
 
 export const SideDrawer = () => {
   const [customer_name, setCustomerName] = useState("")
@@ -91,19 +91,14 @@ export const SideDrawer = () => {
 
   //userID is id of the user to whom we want to send the message
   const accessConversation = async (user_id: string) => {
-    console.log(user_id)
-
     try {
-      console.log("Conversation")
       setLoadingConversation(true)
-      console.log("Loading Conversation")
       const config = {
         headers: {
           "Content-type": "application/json",
           Authorization: `Bearer ${user?.token}`,
         },
       }
-      console.log("Config")
       const { data } = await axios.post(
         "/api/conversation/",
         { otherUserId: user_id },
@@ -126,7 +121,6 @@ export const SideDrawer = () => {
         position: "bottom-left",
       })
     }
-    console.log("Conversation error")
   }
 
   return (

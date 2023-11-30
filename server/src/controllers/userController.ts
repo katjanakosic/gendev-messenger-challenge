@@ -36,7 +36,6 @@ export const registerUser = asyncHandler(
       throw new Error("This user already exists")
     }
 
-
     const user = await User.create({
       name,
       email,
@@ -48,7 +47,6 @@ export const registerUser = asyncHandler(
       pfp,
       ratings: [],
     })
-
 
     if (user) {
       res.status(201).json({
@@ -90,30 +88,31 @@ export const authUser = asyncHandler(async (req: Request, res: Response) => {
     res.status(400)
     throw new Error("Invalid e-mail or password.")
   }
-
 })
 
 interface User {
   id: string
 }
 
-export const getServiceProviders = asyncHandler(async (req: Request, res: Response) => {
-  const db_query = req.query.search
-  ? {
-      $and: [
-        {
-          $or: [
-            { name: { $regex: req.query.search, $options: "i" } },
-            { email: { $regex: req.query.search, $options: "i" } },
+export const getServiceProviders = asyncHandler(
+  async (req: Request, res: Response) => {
+    const db_query = req.query.search
+      ? {
+          $and: [
+            {
+              $or: [
+                { name: { $regex: req.query.search, $options: "i" } },
+                { email: { $regex: req.query.search, $options: "i" } },
+              ],
+            },
+            { user_type: UserTypeEnum.SERVICE_PROVIDER },
           ],
-        },
-        { user_type: UserTypeEnum.SERVICE_PROVIDER },
-      ],
-    }
-  : { user_type: UserTypeEnum.SERVICE_PROVIDER };
+        }
+      : { user_type: UserTypeEnum.SERVICE_PROVIDER }
 
-  const users = await User.find(db_query).find({
-    _id: { $ne: (req.user as User).id },
-  })
-  res.send(users)
-})
+    const users = await User.find(db_query).find({
+      _id: { $ne: (req.user as User).id },
+    })
+    res.send(users)
+  }
+)

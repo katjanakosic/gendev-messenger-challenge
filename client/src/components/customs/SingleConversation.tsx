@@ -6,6 +6,7 @@ import {
   Input,
   Spinner,
   Text,
+  effect,
   useToast,
 } from "@chakra-ui/react"
 import { Image } from "@chakra-ui/image"
@@ -17,16 +18,33 @@ import { ScrollableConversation } from "./ScrollableConversation"
 import axios from "axios"
 import { MessageDto, MessageTypeEnum } from "../../types/MessageDto"
 import "./styles.css"
+import io, { Socket } from "socket.io-client"
+import { ConversationDto } from "../../types/ConversationDto"
 import { ConversationState } from "../../context/ConversationContextProvider"
+
+const ENDPOINT = "http://localhost:3001"
+let socket: Socket
+let selectedConversationCompare: ConversationDto | undefined
 
 export const SingleConversation = () => {
   const [messages, setMessages] = useState<MessageDto[]>([])
   const [loading, setLoading] = useState(false)
   const [newMessage, setNewMessage] = useState("")
+  const [socketConnected, setSocketConnected] = useState(false)
+  const [typing, setTyping] = useState(false)
+  const [isTyping, setIsTyping] = useState(false)
+
   const toast = useToast()
 
-  const { user, selectedConversation, setSelectedConversation } =
-    ConversationState()
+  const {
+    user,
+    selectedConversation,
+    setSelectedConversation,
+    notifications,
+    setNotifications,
+    fetchAgain,
+    setFetchAgain,
+  } = ConversationState()
 
   const fetchMessages = async () => {
     if (!selectedConversation) return
@@ -43,10 +61,10 @@ export const SingleConversation = () => {
         `api/message/${selectedConversation._id}`,
         config
       )
-      console.log(messages)
 
       setMessages(data)
       setLoading(false)
+      socket.emit("join conversation", selectedConversation._id)
     } catch (error) {
       toast({
         title: "Error Occured!",
@@ -59,14 +77,12 @@ export const SingleConversation = () => {
     }
   }
 
-  //The useEffect hook allows you to perform side effects in your components
-  //wird ausgeführt, wenn sich die selectedConversation ändert
-  useEffect(() => {
-    fetchMessages()
-  }, [selectedConversation])
-
   const sendMessage = async (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && newMessage) {
+      socket.emit("stop typing", {
+        room: selectedConversation?._id,
+        user_id: user?._id,
+      })
       try {
         const config = {
           headers: {
@@ -87,6 +103,7 @@ export const SingleConversation = () => {
 
         setNewMessage("")
         setMessages([...messages, data])
+        socket.emit("new message", data)
       } catch (error) {
         toast({
           title: "Error Occured!",
@@ -102,7 +119,67 @@ export const SingleConversation = () => {
 
   const typingHandler = (event: ChangeEvent<HTMLInputElement>) => {
     setNewMessage(event.target.value)
+    if (!socketConnected) return
+    if (!typing) {
+      setTyping(true)
+      socket.emit("typing", {
+        room: selectedConversation?._id,
+        user_id: user?._id,
+      })
+    }
+
+    let lastTypingTime = new Date().getTime()
+    let timerLength = 3000
+    setTimeout(() => {
+      let timeNow = new Date().getTime()
+      let timeDiff = timeNow - lastTypingTime
+      if (timeDiff >= timerLength && typing) {
+        socket.emit("stop typing", {
+          room: selectedConversation?._id,
+          user_id: user?._id,
+        })
+        setTyping(false)
+      }
+    }, timerLength)
   }
+
+  useEffect(() => {
+    fetchMessages()
+    selectedConversationCompare = selectedConversation
+  }, [selectedConversation])
+
+  useEffect(() => {
+    socket = io(ENDPOINT)
+    socket.emit("setup", user)
+    socket.on("connected", () => setSocketConnected(true))
+    socket.on("typing", ({ room, user_id }) => {
+      if (user_id !== user?._id && selectedConversationCompare?._id === room) {
+        setIsTyping(true)
+      }
+    })
+    socket.on("stop typing", ({ room, user_id }) => {
+      if (user_id !== user?._id && selectedConversationCompare?._id === room) {
+        setIsTyping(false)
+      }
+    })
+  }, [selectedConversationCompare, user])
+
+  useEffect(() => {
+    socket.on("message received", (newMessageReceived) => {
+      if (
+        !selectedConversationCompare ||
+        selectedConversationCompare._id !==
+          newMessageReceived.conversation_id._id
+      ) {
+        if (!notifications.includes(newMessageReceived)) {
+          setNotifications([newMessageReceived, ...notifications])
+          setFetchAgain(!fetchAgain)
+        }
+      } else {
+        setMessages([...messages, newMessageReceived])
+      }
+    })
+  })
 
   return (
     <>
@@ -163,6 +240,18 @@ export const SingleConversation = () => {
               </Box>
             )}
             <FormControl onKeyDown={sendMessage} isRequired mt="3">
+              {isTyping && (
+                <Box
+                  style={{
+                    backgroundColor: "#ebebeb",
+                    borderRadius: "20px",
+                    padding: "5px 15px",
+                    maxWidth: "75%",
+                  }}
+                >
+                  Typing...
+                </Box>
+              )}
               <Input
                 variant="filled"
                 bg="#E0E0E0"

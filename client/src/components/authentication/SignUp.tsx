@@ -7,7 +7,7 @@ import {
   InputRightElement,
   VStack,
   Select,
-  Text,
+  Text
 } from "@chakra-ui/react"
 import React, { useState } from "react"
 import axios from "axios"
@@ -34,6 +34,7 @@ export const SignUp = () => {
   const [url, setUrl] = useState("")
 
   const { setUser } = ConversationState()
+
 
   const handleClick = () => setShow(!show)
 
@@ -132,16 +133,7 @@ export const SignUp = () => {
       }
       const { data } = await axios.post(
         "/api/user/signup",
-        {
-          name: name,
-          email: email,
-          password: password,
-          address: address,
-          phone_number: phone_number,
-          user_type: userType,
-          url: url,
-          pfp: pfp,
-        },
+        { name: name, email: email, password: password, address: address, phone_number: phone_number, user_type: userType, url: url, pfp: pfp },
         config
       )
 

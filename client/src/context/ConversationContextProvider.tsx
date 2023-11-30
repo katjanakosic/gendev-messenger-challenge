@@ -3,7 +3,7 @@ import { ConversationContext } from "./ConversationContext"
 import { useNavigate } from "react-router-dom"
 import { UserDto } from "../types/UserDto"
 import { ConversationDto } from "../types/ConversationDto"
-
+import { MessageDto } from "../types/MessageDto"
 
 export function ConversationContextProvider(props: {
   children: React.ReactNode
@@ -17,7 +17,7 @@ export function ConversationContextProvider(props: {
   const [selectedConversation, setSelectedConversation] = React.useState<
     ConversationDto | undefined
   >()
-  //   const [notification, setNotification] = React.useState([])
+  const [notifications, setNotifications] = React.useState<MessageDto[]>([])
   const [conversations, setConversations] = React.useState<ConversationDto[]>(
     []
   )
@@ -38,22 +38,22 @@ export function ConversationContextProvider(props: {
     return {
       selectedConversation,
       setSelectedConversation,
-      //   notification,
-      //   setNotification,
+      notifications,
+      setNotifications,
       conversations,
       setConversations,
       fetchAgain,
       setFetchAgain,
       user,
-      setUser
+      setUser,
     }
   }, [
     selectedConversation,
-    // notification,
-    // setNotification,
+    notifications,
+    setNotifications,
     conversations,
     fetchAgain,
-    user
+    user,
   ])
 
   return (

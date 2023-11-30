@@ -49,7 +49,9 @@ export const createMessage = asyncHandler(
           updated_at: new Date(),
         })
 
-        message = await message.populate("sender_id", "-password")
+        message = await (
+          await message.populate("sender_id", "-password")
+        ).populate("conversation_id")
 
         res.status(201).json(message)
       } else {
