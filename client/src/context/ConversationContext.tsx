@@ -1,6 +1,6 @@
 import React from "react"
-import { ConversationDto } from "../types/ConversationDto"
 import { UserDto } from "../types/UserDto"
+import { ConversationDto } from "../types/ConversationDto"
 
 type ConversationContextType = {
   selectedConversation: ConversationDto | undefined
@@ -11,8 +11,8 @@ type ConversationContextType = {
   // setNotification:
   conversations: ConversationDto[]
   setConversations: React.Dispatch<React.SetStateAction<ConversationDto[]>>
-  fetchConversations: boolean
-  setFetchConversations: React.Dispatch<React.SetStateAction<boolean>>
+  fetchAgain: boolean
+  setFetchAgain: React.Dispatch<React.SetStateAction<boolean>>
   user: UserDto | undefined
   setUser: React.Dispatch<React.SetStateAction<UserDto | undefined>>
 }
@@ -25,8 +25,8 @@ export const ConversationContext = React.createContext<ConversationContextType>(
     // setNotification:
     conversations: [],
     setConversations: () => {},
-    fetchConversations: false,
-    setFetchConversations: () => {},
+    fetchAgain: false,
+    setFetchAgain: () => {},
     user: undefined,
     setUser: () => {}
   }

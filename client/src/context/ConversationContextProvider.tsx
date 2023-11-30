@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { UserDto } from "../types/UserDto"
 import { ConversationDto } from "../types/ConversationDto"
 
+
 export function ConversationContextProvider(props: {
   children: React.ReactNode
 }) {
@@ -20,7 +21,7 @@ export function ConversationContextProvider(props: {
   const [conversations, setConversations] = React.useState<ConversationDto[]>(
     []
   )
-  const [fetchConversations, setFetchConversations] = React.useState(false)
+  const [fetchAgain, setFetchAgain] = React.useState(false)
 
   React.useEffect(() => {
     const userInfoString = localStorage.getItem("userInfo")
@@ -29,7 +30,6 @@ export function ConversationContextProvider(props: {
       const userInfo = JSON.parse(userInfoString)
       setUser(userInfo)
     } else {
-      // Handle the case where userInfoString is null (not authenticated)
       navigate("/")
     }
   }, [navigate])
@@ -42,18 +42,18 @@ export function ConversationContextProvider(props: {
       //   setNotification,
       conversations,
       setConversations,
-      fetchConversations,
-      setFetchConversations,
+      fetchAgain,
+      setFetchAgain,
       user,
-      setUser,
+      setUser
     }
   }, [
     selectedConversation,
     // notification,
     // setNotification,
     conversations,
-    fetchConversations,
-    user,
+    fetchAgain,
+    user
   ])
 
   return (

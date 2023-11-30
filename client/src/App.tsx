@@ -15,7 +15,7 @@ function App() {
     >
       <Routes>
         <Route path="/" element={<Homepage />} />
-        <Route path="/chats" element={<ConversationView />} />
+        <Route path="/conversations" element={<ConversationView />} />
       </Routes>
     </div>
   )

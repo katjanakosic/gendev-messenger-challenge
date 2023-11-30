@@ -13,6 +13,7 @@ export const ConversationList = () => {
     user,
     conversations,
     setConversations,
+    fetchAgain
   } = ConversationState()
   const toast = useToast()
 
@@ -41,7 +42,7 @@ export const ConversationList = () => {
   React.useEffect(() => {
     setLoggedUser(JSON.parse(localStorage.getItem("userInfo") || "{}"))
     fetchConversations()
-  }, [])
+  }, [fetchAgain])
 
   return (
     <Box
@@ -72,7 +73,7 @@ export const ConversationList = () => {
                 onClick={() => setSelectedConversation(conversation)}
                 cursor="pointer"
                 bg={
-                  selectedConversation === conversation ? "#38B2AC" : "#E8E8E8"
+                  selectedConversation === conversation ? "#b281e3" : "#E8E8E8"
                 }
                 color={
                   selectedConversation === conversation ? "white" : "black"
