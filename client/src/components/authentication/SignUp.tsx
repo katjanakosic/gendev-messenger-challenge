@@ -167,6 +167,7 @@ export const SignUp = () => {
         <FormLabel>Name</FormLabel>
         <Input
           placeholder="Please enter Your name"
+          value={name}
           onChange={(e) => setName(e.target.value)}
         />
       </FormControl>
@@ -174,6 +175,7 @@ export const SignUp = () => {
         <FormLabel>Email</FormLabel>
         <Input
           placeholder="Please enter Your email"
+          value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>
@@ -183,6 +185,7 @@ export const SignUp = () => {
           <Input
             type={show ? "text" : "password"}
             placeholder="Please enter Your password"
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           <InputRightElement width="4.5rem">
@@ -198,6 +201,7 @@ export const SignUp = () => {
           <Input
             type={show ? "text" : "password"}
             placeholder="Please confirm Your password"
+            value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
           <InputRightElement width="4.5rem">
@@ -211,6 +215,7 @@ export const SignUp = () => {
         <FormLabel>Address</FormLabel>
         <Input
           placeholder="Please enter Your address"
+          value={address}
           onChange={(e) => setAddress(e.target.value)}
         />
       </FormControl>
@@ -218,6 +223,7 @@ export const SignUp = () => {
         <FormLabel>Phone Number</FormLabel>
         <Input
           placeholder="Please enter Your phone number"
+          value={phone_number}
           onChange={(e) => setPhoneNumber(e.target.value)}
         />
       </FormControl>
@@ -233,7 +239,6 @@ export const SignUp = () => {
       </FormControl>
       <FormLabel alignSelf="start">I am a...</FormLabel>
       <Select
-        defaultValue={userType}
         value={userType}
         onChange={(e) => setUserType(e.target.value)}
       >

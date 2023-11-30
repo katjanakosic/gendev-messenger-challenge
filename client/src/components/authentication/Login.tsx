@@ -36,7 +36,7 @@ export const Login = () => {
     try {
       const config = {
         headers: {
-          "Content-type": "application/json",
+          "Content-type": "application/json"
         },
       }
 
@@ -57,9 +57,9 @@ export const Login = () => {
       localStorage.setItem("userInfo", JSON.stringify(data))
       setLoading(false)
       navigate("/conversations")
-    } catch (error: any) {
+    } catch (error) {
       toast({
-        title: error,
+        title: "Error",
         status: "error",
         duration: 5000,
         isClosable: true,
