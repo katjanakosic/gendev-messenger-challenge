@@ -13,7 +13,7 @@ export const ConversationList = () => {
     user,
     conversations,
     setConversations,
-    fetchAgain
+    fetchAgain,
   } = ConversationState()
   const toast = useToast()
 
@@ -30,7 +30,7 @@ export const ConversationList = () => {
     } catch (error) {
       toast({
         title: "Error Occured!",
-        description: "Failed to Load the Conversations",
+        description: "Failed to Load the conversations",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -73,10 +73,10 @@ export const ConversationList = () => {
                 onClick={() => setSelectedConversation(conversation)}
                 cursor="pointer"
                 bg={
-                  selectedConversation === conversation ? "#b281e3" : "#E8E8E8"
+                  selectedConversation?._id === conversation._id ? "#b281e3" : "#E8E8E8"
                 }
                 color={
-                  selectedConversation === conversation ? "white" : "black"
+                  selectedConversation?._id === conversation._id ? "white" : "black"
                 }
                 px={3}
                 py={2}
@@ -88,7 +88,14 @@ export const ConversationList = () => {
                     ? conversation.service_provider_name
                     : conversation.customer_name}
                 </Text>
-                {}
+                {conversation.latest_message && (
+                  <Text fontSize="xs">
+                    {conversation.latest_message.text.length > 50
+                      ? conversation.latest_message.text.substring(0, 51) +
+                        "..."
+                      : conversation.latest_message.text}
+                  </Text>
+                )}
               </Box>
             ))}
           </Stack>

@@ -77,7 +77,7 @@ export const createMessage = asyncHandler(
         ).populate({
           path: "conversation_id",
           populate: {
-            path: "customer_id service_provider_id",
+            path: "customer_id service_provider_id latest_message",
           },
         })
 

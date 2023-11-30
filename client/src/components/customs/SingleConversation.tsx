@@ -104,6 +104,7 @@ export const SingleConversation = () => {
 
         setNewMessage("")
         setMessages([...messages, data])
+        setFetchAgain(!fetchAgain)
         socket.emit("new message", data)
       } catch (error) {
         toast({
@@ -302,7 +303,10 @@ export const SingleConversation = () => {
               />
             ) : (
               <Box className="messages">
-                <ScrollableConversation messages={messages} isTyping={isTyping} />
+                <ScrollableConversation
+                  messages={messages}
+                  isTyping={isTyping}
+                />
               </Box>
             )}
             <FormControl onKeyDown={sendMessage} isRequired mt="3">
