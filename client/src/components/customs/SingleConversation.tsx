@@ -248,6 +248,38 @@ export const SingleConversation = () => {
     }
   }
 
+  const handleComplete = async () => {
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }
+
+      const { data } = await axios.post(
+        "/api/message/complete",
+        {
+          conversation_id: selectedConversation?._id,
+        },
+        config
+      )
+
+      setMessages([...messages, data])
+      socket.emit("new message", data)
+      setSelectedConversation(data.conversation_id)
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to send the Message",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      })
+    }
+  }
+
   return (
     <>
       {selectedConversation ? (
@@ -268,7 +300,7 @@ export const SingleConversation = () => {
               icon={<ArrowBackIcon />}
               onClick={() => setSelectedConversation(undefined)}
             />
-            <Box display="flex" alignItems="center" >
+            <Box display="flex" alignItems="center">
               <Avatar
                 borderRadius="full"
                 boxSize="40px"
@@ -291,29 +323,38 @@ export const SingleConversation = () => {
             </Box>
             <Box display="flex">
               {user?.user_type === UserTypeEnum.CUSTOMER && (
-                <IconButton
-                  mr={2}
-                  aria-label="Visit Website"
-                  icon={<LinkIcon />}
-                  isDisabled={selectedConversation.state !== StateEnum.ACCEPTED}
-                  onClick={() => {
-                    const websiteUrl =
-                      selectedConversation.service_provider_id.url
-
-                    if (websiteUrl) {
-                      const fullUrl = websiteUrl.startsWith("www")
-                        ? `https://${websiteUrl}`
-                        : websiteUrl.startsWith("http://") ||
-                          websiteUrl.startsWith("https://")
-                        ? websiteUrl
-                        : `http://${websiteUrl}`
-
-                      window.open(fullUrl)
-                    } else {
-                      console.error("Website URL is not available")
+                <>
+                  {selectedConversation.state === StateEnum.ACCEPTED && (
+                    <Button mr={2} onClick={handleComplete}>
+                      Complete
+                    </Button>
+                  )}
+                  <IconButton
+                    mr={2}
+                    aria-label="Visit Website"
+                    icon={<LinkIcon />}
+                    isDisabled={
+                      selectedConversation.state !== StateEnum.ACCEPTED
                     }
-                  }}
-                />
+                    onClick={() => {
+                      const websiteUrl =
+                        selectedConversation.service_provider_id.url
+
+                      if (websiteUrl) {
+                        const fullUrl = websiteUrl.startsWith("www")
+                          ? `https://${websiteUrl}`
+                          : websiteUrl.startsWith("http://") ||
+                            websiteUrl.startsWith("https://")
+                          ? websiteUrl
+                          : `http://${websiteUrl}`
+
+                        window.open(fullUrl)
+                      } else {
+                        console.error("Website URL is not available")
+                      }
+                    }}
+                  />
+                </>
               )}
               <IconButton
                 aria-label="Send Email"

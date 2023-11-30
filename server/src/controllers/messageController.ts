@@ -241,3 +241,66 @@ export const createReject = asyncHandler(
     }
   }
 )
+
+export const createComplete = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { conversation_id } = req.body
+
+    if (!conversation_id) {
+      res.status(400)
+      throw new Error("Invalid message")
+    }
+
+    try {
+      const myUserId = (req.user as User).id
+      const myUserObject = await User.findById(myUserId)
+
+      if (!myUserObject) {
+        res.status(404).send()
+        throw new Error("User not found")
+      }
+
+      const conversationObject = await Conversation.findById(conversation_id)
+
+      if (!conversationObject) {
+        res.status(404).send()
+        throw new Error("Conversation not found")
+      }
+
+      let message = await Message.create({
+        conversation_id: conversation_id,
+        message_type: MessageTypeEnum.COMPLETE_MESSAGE,
+        text: "Conversation completed",
+        sender_type: myUserObject.user_type,
+        created_at: new Date(),
+        updated_at: new Date(),
+        sender_id: myUserId,
+      })
+
+      if (message) {
+        await Conversation.findByIdAndUpdate(conversation_id, {
+          latest_message: message._id,
+          updated_at: new Date(),
+          state: StateEnum.COMPLETED
+        })
+
+        message = await (
+          await message.populate("sender_id", "-password")
+        ).populate({
+          path: "conversation_id",
+          populate: {
+            path: "customer_id service_provider_id",
+          },
+        })
+
+        res.status(201).json(message)
+      } else {
+        res.status(400).json({ error: "Invalid message data" })
+      }
+    } catch (error) {
+      console.log(error)
+      res.status(400).send()
+    }
+  }
+)
+
