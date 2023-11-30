@@ -4,17 +4,16 @@ import {
   Button,
   FormControl,
   IconButton,
+  Avatar,
   Input,
   Spinner,
   Text,
-  effect,
   useToast,
 } from "@chakra-ui/react"
 import { Image } from "@chakra-ui/image"
 import chatting from "../../assets/Chat-amico.svg"
 import { ArrowBackIcon, EmailIcon, LinkIcon } from "@chakra-ui/icons"
 import { UserTypeEnum } from "../../types/UserDto"
-import { ProfileModal } from "./ProfileModal"
 import { ScrollableConversation } from "./ScrollableConversation"
 import axios from "axios"
 import { MessageDto, MessageTypeEnum } from "../../types/MessageDto"
@@ -269,17 +268,34 @@ export const SingleConversation = () => {
               icon={<ArrowBackIcon />}
               onClick={() => setSelectedConversation(undefined)}
             />
-
-            <Text>
-              {user?.user_type === UserTypeEnum.CUSTOMER
-                ? selectedConversation.service_provider_name
-                : selectedConversation.customer_name}
-            </Text>
+            <Box display="flex" alignItems="center" >
+              <Avatar
+                borderRadius="full"
+                boxSize="40px"
+                src={
+                  user?.user_type === UserTypeEnum.CUSTOMER
+                    ? selectedConversation.service_provider_id.pfp
+                    : selectedConversation.customer_id.pfp
+                }
+                name={
+                  user?.user_type === UserTypeEnum.CUSTOMER
+                    ? selectedConversation.service_provider_id.name
+                    : selectedConversation.customer_id.name
+                }
+              />
+              <Text ml={3}>
+                {user?.user_type === UserTypeEnum.CUSTOMER
+                  ? selectedConversation.service_provider_name
+                  : selectedConversation.customer_name}
+              </Text>
+            </Box>
             <Box display="flex">
               {user?.user_type === UserTypeEnum.CUSTOMER && (
                 <IconButton
+                  mr={2}
                   aria-label="Visit Website"
                   icon={<LinkIcon />}
+                  isDisabled={selectedConversation.state !== StateEnum.ACCEPTED}
                   onClick={() => {
                     const websiteUrl =
                       selectedConversation.service_provider_id.url
@@ -302,6 +318,7 @@ export const SingleConversation = () => {
               <IconButton
                 aria-label="Send Email"
                 icon={<EmailIcon />}
+                isDisabled={selectedConversation.state !== StateEnum.ACCEPTED}
                 onClick={() => {
                   window.open(
                     `mailto: ${
@@ -311,13 +328,6 @@ export const SingleConversation = () => {
                     }`
                   )
                 }}
-              />
-              <ProfileModal
-                user={
-                  user?.user_type === UserTypeEnum.CUSTOMER
-                    ? selectedConversation.service_provider_id
-                    : selectedConversation.customer_id
-                }
               />
             </Box>
           </Box>
