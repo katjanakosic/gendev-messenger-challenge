@@ -18,7 +18,7 @@ import { UserDto } from "../../types/UserDto";
 import React from "react";
 
 
-export const ProfileModal = ({ user, children }: {user: UserDto | undefined, children: React.ReactNode}) => {
+export const ProfileModal = ({ user, children }: {user: UserDto | undefined, children?: React.ReactNode}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
