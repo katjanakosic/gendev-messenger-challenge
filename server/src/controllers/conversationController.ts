@@ -60,7 +60,7 @@ export const createConversation = asyncHandler(async (req: Request, res: Respons
     const conversation = await Conversation.create({
       customer_name: customer_name,
       service_provider_name: service_provider_name,
-      state: StateEnum.QUOTED,
+      state: StateEnum.INITIATED,
       created_at: Date(),
       updated_at: Date(),
       customer_id: customer_id,

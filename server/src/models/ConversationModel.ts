@@ -1,6 +1,7 @@
 import * as mongoose from "mongoose"
 
 export enum StateEnum {
+  INITIATED = "initiated",
   QUOTED = "quoted",
   ACCEPTED = "accepted",
   REJECTED = "rejected",
