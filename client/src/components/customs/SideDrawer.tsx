@@ -26,10 +26,10 @@ import { ProfileModal } from "./ProfileModal"
 import { useNavigate } from "react-router-dom"
 import { useToast } from "@chakra-ui/react"
 import axios from "axios"
-import ConversationLoading from "../ConversationLoading"
 import UserListItem from "../userAvatar/UserListItem"
 import { UserDto, UserTypeEnum } from "../../types/UserDto"
 import { ConversationState } from "../../context/ConversationContextProvider"
+import ConversationLoading from "../ConversationLoading"
 
 export const SideDrawer = () => {
   const [customer_name, setCustomerName] = useState("")
@@ -91,21 +91,26 @@ export const SideDrawer = () => {
 
   //userID is id of the user to whom we want to send the message
   const accessConversation = async (user_id: string) => {
+    console.log(user_id)
+
     try {
+      console.log("Conversation")
       setLoadingConversation(true)
+      console.log("Loading Conversation")
       const config = {
         headers: {
           "Content-type": "application/json",
           Authorization: `Bearer ${user?.token}`,
         },
       }
+      console.log("Config")
       const { data } = await axios.post(
         "/api/conversation/",
         { otherUserId: user_id },
         config
       )
 
-      //if Conversation is already present in the list then update the list
+      //if conversation is already present in the list then update the list
       if (!conversations.find((c) => c._id === data._id))
         setConversations([data, ...conversations])
       setSelectedConversation(data)
@@ -113,7 +118,7 @@ export const SideDrawer = () => {
       onClose()
     } catch (error: any) {
       toast({
-        title: "Error fetching the Conversation",
+        title: "Error fetching the conversation",
         description: error.message,
         status: "error",
         duration: 5000,
@@ -121,10 +126,11 @@ export const SideDrawer = () => {
         position: "bottom-left",
       })
     }
+    console.log("Conversation error")
   }
 
   return (
-    <div>
+    <Box>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -136,7 +142,7 @@ export const SideDrawer = () => {
       >
         <Box display="flex" width="33%" justifyContent="start">
           {user?.user_type === UserTypeEnum.CUSTOMER && (
-            <Tooltip label="Search users to Conversation" hasArrow placement="bottom">
+            <Tooltip label="Search users to chat" hasArrow placement="bottom">
               <Button variant="ghost" onClick={onOpen}>
                 <Search2Icon />
                 <Text display={{ base: "none", md: "flex" }} px="4">
@@ -209,6 +215,6 @@ export const SideDrawer = () => {
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-    </div>
+    </Box>
   )
 }

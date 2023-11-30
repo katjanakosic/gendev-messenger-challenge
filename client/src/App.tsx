@@ -1,12 +1,13 @@
 import { useState } from "react"
 import "./App.css"
 import Homepage from "./views/HomepageView"
-import ConversationView from "./views/ConversationView"
 import { Route, Routes } from "react-router-dom"
+import { Box } from "@chakra-ui/react"
+import ConversationView from "./views/ConversationView"
 
 function App() {
   return (
-    <div
+    <Box
       style={{
         background: "linear-gradient(#dab3e8, #bf77d9)",
         width: "100%",
@@ -17,7 +18,7 @@ function App() {
         <Route path="/" element={<Homepage />} />
         <Route path="/conversations" element={<ConversationView />} />
       </Routes>
-    </div>
+    </Box>
   )
 }
 

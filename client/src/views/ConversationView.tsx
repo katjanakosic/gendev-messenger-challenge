@@ -2,15 +2,15 @@ import { Box, effect } from "@chakra-ui/react"
 import axios from "axios"
 import React, { useEffect } from "react"
 import { SideDrawer } from "../components/customs/SideDrawer"
+import { ConversationState } from "../context/ConversationContextProvider"
 import { ConversationList } from "../components/customs/ConversationList"
 import { ConversationBox } from "../components/customs/ConversationBox"
-import { ConversationState } from "../context/ConversationContextProvider"
 
 const ConversationView = () => {
   const { user } = ConversationState()
 
   return (
-    <div style={{ width: "100%" }}>
+    <Box style={{ width: "100%" }}>
       {user && <SideDrawer />}
       <Box
         display="flex"
@@ -22,7 +22,7 @@ const ConversationView = () => {
         {user && <ConversationList />}
         {user && <ConversationBox />}
       </Box>
-    </div>
+    </Box>
   )
 }
 

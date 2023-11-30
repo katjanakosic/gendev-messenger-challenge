@@ -33,7 +33,7 @@ export const createMessage = asyncHandler(
         throw new Error("Conversation not found")
       }
 
-      const message = await Message.create({
+      let message = await Message.create({
         conversation_id: conversation_id,
         message_type: message_type,
         text: text,
@@ -49,16 +49,9 @@ export const createMessage = asyncHandler(
           updated_at: new Date(),
         })
 
-        res.status(201).json({
-          _id: message._id,
-          conversation_id: message.conversation_id,
-          message_type: message.message_type,
-          text: message.text,
-          sender_type: message.sender_type,
-          created_at: message.created_at,
-          updated_at: message.updated_at,
-          sender_id: message.sender_id,
-        })
+        message = await message.populate("sender_id", "-password")
+
+        res.status(201).json(message)
       } else {
         res.status(400).json({ error: "Invalid message data" })
       }
@@ -72,15 +65,21 @@ export const createMessage = asyncHandler(
 export const getAllMessages = asyncHandler(
   async (req: Request, res: Response) => {
     try {
-      const conversationId = req.params.conversation_id
+      const conversation_id = req.params.conversation_id
+
+      if (!conversation_id) {
+        res.status(400)
+        throw new Error("Invalid conversation id")
+      }
 
       const messages = await Message.find({
-        conversation_id: req.params.conversation_id,
-      })
-
+        conversation_id: conversation_id,
+      }).populate("sender_id", "-password")
 
       if (messages) {
-        res.json(messages)
+        res.status(201).json(messages)
+      } else {
+        res.status(400).json({ error: "Invalid message data" })
       }
     } catch (error) {
       res.status(404)
