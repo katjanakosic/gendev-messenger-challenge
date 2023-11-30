@@ -32,10 +32,6 @@ import { UserDto, UserTypeEnum } from "../../types/UserDto"
 import { ConversationState } from "../../context/ConversationContextProvider"
 
 export const SideDrawer = () => {
-  const [customer_name, setCustomerName] = useState("")
-  const [service_provider_name, setServiceProviderName] = useState("")
-  const [customer_id, setCustomerId] = useState("")
-  const [service_provider_id, setServiceProviderId] = useState("")
   const [search, setSearch] = useState("")
   const [searchResults, setSearchResults] = useState([])
   const [loading, setLoading] = useState(false)
@@ -45,8 +41,14 @@ export const SideDrawer = () => {
   const navigate = useNavigate()
   const toast = useToast()
 
-  const { setSelectedConversation, conversations, setConversations, user } =
-    ConversationState()
+  const {
+    setSelectedConversation,
+    conversations,
+    setConversations,
+    user,
+    notifications,
+    setNotifications,
+  } = ConversationState()
 
   const logoutHandler = () => {
     localStorage.removeItem("userInfo")
@@ -155,10 +157,28 @@ export const SideDrawer = () => {
         <Box display="flex" justifyContent="end" width="33%">
           <Menu>
             <MenuButton p={1}>
-              {}
+              {/* <NotificationBadge
+                count={notification.length}
+                effect={Effect.SCALE}
+              /> */}
               <BellIcon fontSize="2xl" m={1} />
             </MenuButton>
-            {}
+            <MenuList pl={2}>
+              {!notifications.length && "No new messages"}
+              {notifications.map((notif) => (
+                <MenuItem
+                  key={notif._id}
+                  onClick={() => {
+                    console.log(notif)
+                    console.log(notif.conversation_id)
+                    setSelectedConversation(notif.conversation_id)
+                    setNotifications(notifications.filter((n) => n !== notif))
+                  }}
+                >
+                  {`New message from ${notif.sender_id.name}`}
+                </MenuItem>
+              ))}
+            </MenuList>
           </Menu>
 
           <Menu>

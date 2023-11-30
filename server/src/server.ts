@@ -75,13 +75,13 @@ io.on("connection", (socket: Socket) => {
     if (!conversation.service_provider_id || !conversation.customer_id)
       return console.log("Users not defined")
 
-    if (newMessageReceived.sender_id._id === conversation.service_provider_id) {
+    if (newMessageReceived.sender_id._id === conversation.service_provider_id._id) {
       socket
-        .in(conversation.customer_id)
+        .in(conversation.customer_id._id)
         .emit("message received", newMessageReceived)
     } else {
       socket
-        .in(conversation.service_provider_id)
+        .in(conversation.service_provider_id._id)
         .emit("message received", newMessageReceived)
     }
   })

@@ -185,7 +185,7 @@ export const SingleConversation = () => {
     <>
       {selectedConversation ? (
         <>
-          <Text
+          <Box
             fontSize={{ base: "28px", md: "30px" }}
             pb={3}
             px={2}
@@ -214,7 +214,7 @@ export const SingleConversation = () => {
                   : selectedConversation.customer_id
               }
             />
-          </Text>
+          </Box>
           <Box
             display="flex"
             flexDir="column"

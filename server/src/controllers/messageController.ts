@@ -51,7 +51,13 @@ export const createMessage = asyncHandler(
 
         message = await (
           await message.populate("sender_id", "-password")
-        ).populate("conversation_id")
+        ).populate({
+          path: "conversation_id",
+          populate: {
+            path: "customer_id service_provider_id",
+          },
+        })
+        console.log("Create message successful", message)
 
         res.status(201).json(message)
       } else {
