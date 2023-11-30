@@ -1,8 +1,8 @@
 import asyncHandler from "express-async-handler"
 import { Request, Response } from "express"
-import { Message } from "../models/MessageModel"
-import { User } from "../models/UserModel"
-import { Conversation } from "../models/ConversationModel"
+import { Message, MessageTypeEnum } from "../models/MessageModel"
+import { User, UserTypeEnum } from "../models/UserModel"
+import { Conversation, StateEnum } from "../models/ConversationModel"
 
 interface User {
   id: string
@@ -33,15 +33,38 @@ export const createMessage = asyncHandler(
         throw new Error("Conversation not found")
       }
 
-      let message = await Message.create({
-        conversation_id: conversation_id,
-        message_type: message_type,
-        text: text,
-        sender_type: myUserObject.user_type,
-        created_at: new Date(),
-        updated_at: new Date(),
-        sender_id: myUserId,
-      })
+      let message
+      if (
+        conversationObject.state === StateEnum.INITIATED &&
+        myUserObject.user_type === UserTypeEnum.SERVICE_PROVIDER
+      ) {
+        message = await Message.create({
+          conversation_id: conversation_id,
+          message_type: MessageTypeEnum.QUOTE_OFFER,
+          text: text,
+          sender_type: myUserObject.user_type,
+          created_at: new Date(),
+          updated_at: new Date(),
+          sender_id: myUserId,
+        })
+
+        await Conversation.updateOne(
+          { _id: conversationObject._id },
+          { $set: { state: StateEnum.QUOTED } }
+        )
+
+        console.log("Conversation updated")
+      } else {
+        message = await Message.create({
+          conversation_id: conversation_id,
+          message_type: message_type,
+          text: text,
+          sender_type: myUserObject.user_type,
+          created_at: new Date(),
+          updated_at: new Date(),
+          sender_id: myUserId,
+        })
+      }
 
       if (message) {
         await Conversation.findByIdAndUpdate(conversation_id, {
@@ -57,7 +80,8 @@ export const createMessage = asyncHandler(
             path: "customer_id service_provider_id",
           },
         })
-        console.log("Create message successful", message)
+
+        console.log(message)
 
         res.status(201).json(message)
       } else {

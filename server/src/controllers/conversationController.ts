@@ -51,21 +51,28 @@ export const createConversation = asyncHandler(async (req: Request, res: Respons
     })
 
     if (existingConversation) {
+      await (
+        await existingConversation.populate("customer_id", "-password")
+      ).populate("service_provider_id", "-password")
       // If a conversation exists, return it
       res.status(200).json(existingConversation)
       return
     }
 
     // If no existing conversation, create a new one
-    const conversation = await Conversation.create({
-      customer_name: customer_name,
-      service_provider_name: service_provider_name,
-      state: StateEnum.INITIATED,
-      created_at: Date(),
-      updated_at: Date(),
-      customer_id: customer_id,
-      service_provider_id: service_provider_id,
-    })
+    const conversation = await (
+      await (
+        await Conversation.create({
+          customer_name: customer_name,
+          service_provider_name: service_provider_name,
+          state: StateEnum.INITIATED,
+          created_at: Date(),
+          updated_at: Date(),
+          customer_id: customer_id,
+          service_provider_id: service_provider_id,
+        })
+      ).populate("customer_id", "-password")
+    ).populate("service_provider_id", "-password")
 
     if (conversation) {
       res.status(201).json({
