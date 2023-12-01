@@ -30,8 +30,9 @@ gendev-messenger-challenge
 ```
 
 ## Live Demo
+[![Screen Recording of messenger](https://img.youtube.com/vi/jr9dfn3ArfQ/default.jpg)](https://youtu.be/jr9dfn3ArfQ)
 
-## Project description using MERN Stack
+## Project description
 
 For building a comprehensive and user-friendly messenger application, this project utilizes a MERN (MongoDB, Express.js, React, Node.js) Stack. It provides a cohesive and efficient development experience, where MongoDB serves as the database, Express.js as the server framework, React as the client-side library, and Node.js as the runtime environment for the server-side execution. In addition to that the client utilizes ChakraUI, a popular open-source React component library that provides a set of accessible and customizable UI components for building React applications.
 
@@ -91,41 +92,41 @@ Use the functionality that enables users to search for or connect with others. S
 ## Minimal Requirements
 The following functionalities that were given by the challenge represent the minimal requirements the messenger needs to fulfill.
 
-### Conversation View
+**Conversation View**
 
 - Conversations are viewable from both customer and service provider perspectives
 - Separate routes ensure cross-device communication
 
-### Conversations Overview
+**Conversations Overview**
 
 - Simple chat overviews for both customers and service providers
 - Clickable chats for easy navigation
 
-### Persistence
+**Persistence**
 
 - Conversations are mutable and persisted in a database/store with a unique identifier
 
-### Scrolling Pagination
+**Scrolling Pagination**
 
 - Users can scroll through conversation history with efficient pagination support
 
-### Attachments (Images and PDFs)
+**Attachments (Images and PDFs)**
 
 - Customers and service providers can send messages with optional attachments
 
-### Masking of Sensitive Information
+**Masking of Sensitive Information**
 
 - Contactable data (phone number, email, URL) is masked when the conversation status is "quoted"
 
-### Show Sent Message Without Refreshing
+**Show Sent Message Without Refreshing**
 
 - Messages appear in the chat in real-time without the need for page refreshing
 
-### Hide Message Field in Rejected State
+**Hide Message Field in Rejected State**
 
 - If a conversation status is "rejected," the message input field disappears, and no further actions are possible
 
-### Request Customer Reviews
+**Request Customer Reviews**
 
 - Service providers can request reviews from customers within the conversation
 
