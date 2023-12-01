@@ -105,17 +105,6 @@ export const Login = () => {
       >
         Login
       </Button>
-      <Button
-        variant="solid"
-        colorScheme="blue"
-        width="100%"
-        onClick={() => {
-          setEmail("guest@example.com")
-          setPassword("123456")
-        }}
-      >
-        Get Guest User Credentials
-      </Button>
     </VStack>
   )
 }

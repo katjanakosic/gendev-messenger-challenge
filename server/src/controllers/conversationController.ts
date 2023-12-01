@@ -33,7 +33,6 @@ export const createConversation = asyncHandler(
         customer_name = otherUserObject.name
       }
 
-      // Check if a conversation already exists between these two users
       const existingConversation = await Conversation.findOne({
         $or: [
           {
@@ -55,12 +54,10 @@ export const createConversation = asyncHandler(
         await (
           await existingConversation.populate("customer_id", "-password")
         ).populate("service_provider_id", "-password")
-        // If a conversation exists, return it
         res.status(200).json(existingConversation)
         return
       }
 
-      // If no existing conversation, create a new one
       const conversation = await (
         await (
           await Conversation.create({

@@ -189,13 +189,8 @@ export const SingleConversation = () => {
     setHasMore(true)
     setMessages([])
     fetchMessages(1)
-    // setPageNumber((prevPageNumber) => prevPageNumber + 1)
     selectedConversationCompare = selectedConversation
   }, [selectedConversation])
-
-  // useEffect(() => {
-  //   fetchMessages()
-  // }, [pageNumber])
 
   useEffect(() => {
     socket = io(ENDPOINT)

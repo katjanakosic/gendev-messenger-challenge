@@ -13,8 +13,6 @@ export const StarRating = ({
   count: number
   size: number
 }) => {
-  // count: number of stars you want, pass as props
-  //size: size of star that you want
   const [hover, setHover] = useState<number | null>(null)
 
   return (

@@ -31,7 +31,6 @@ export const ScrollableConversation = ({
               key={message._id}
               justifyContent={alignSelf}
               mb={2}
-              // ref={index === 0 ? lastMessageRef as any: undefined}
             >
               <Box
                 style={{

@@ -11,7 +11,7 @@ function App() {
       style={{
         background: "linear-gradient(#dab3e8, #bf77d9)",
         width: "100%",
-        height: "100vh",
+        minHeight: "100vh",
       }}
     >
       <Routes>

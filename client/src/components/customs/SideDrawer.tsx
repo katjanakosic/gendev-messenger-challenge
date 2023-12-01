@@ -91,7 +91,6 @@ export const SideDrawer = () => {
     }
   }
 
-  //userID is id of the user to whom we want to send the message
   const accessConversation = async (user_id: string) => {
     try {
       setLoadingConversation(true)
@@ -107,7 +106,6 @@ export const SideDrawer = () => {
         config
       )
 
-      //if conversation is already present in the list then update the list
       if (!conversations.find((c) => c._id === data._id))
         setConversations([data, ...conversations])
       setSelectedConversation(data)

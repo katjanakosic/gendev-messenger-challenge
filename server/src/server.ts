@@ -12,7 +12,7 @@ connectDB()
 
 const app = express()
 
-app.use(express.json()) //to accept json data
+app.use(express.json()) 
 
 app.get("/", (req: Request, res: Response) => {
   res.send("API is running")
@@ -44,14 +44,10 @@ const io = require("socket.io")(server, {
 
 io.on("connection", (socket: Socket) => {
   socket.on("setup", (user_data) => {
-    //join new room with user id as room name
     socket.join(user_data._id)
-    //emit to room named connected
     socket.emit("connected")
   })
 
-  //joining a conversation
-  //room is conversation id
   socket.on("join conversation", (room) => {
     socket.join(room)
     console.log("User joined room " + room)

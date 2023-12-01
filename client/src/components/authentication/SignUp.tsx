@@ -15,8 +15,6 @@ import { useToast } from "@chakra-ui/toast"
 import { useNavigate } from "react-router-dom"
 import { ConversationState } from "../../context/ConversationContextProvider"
 
-//TODO: Implement user type selection with a picker for 'customer' or 'service provider' which are both required fields
-
 export const SignUp = () => {
   const toast = useToast()
   const navigate = useNavigate()
