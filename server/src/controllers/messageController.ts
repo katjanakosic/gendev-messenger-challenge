@@ -102,9 +102,27 @@ export const getAllMessages = asyncHandler(
         throw new Error("Invalid conversation id")
       }
 
+      if (!req.query.page) {
+        res.status(400)
+        throw new Error("Missing page")
+      }
+      const page = parseInt(req.query.page as string, 10)
+      const pageSize = 20
+
+      if (isNaN(page) || page < 1) {
+        res.status(400)
+        throw new Error("Invalid page")
+      }
+
+      const skip = (page - 1) * pageSize
+
       const messages = await Message.find({
         conversation_id: conversation_id,
-      }).populate("sender_id", "-password")
+      })
+        .populate("sender_id", "-password")
+        .sort({ updated_at: -1 })
+        .skip(skip)
+        .limit(pageSize)
 
       if (messages) {
         res.status(201).json(messages)
@@ -157,7 +175,7 @@ export const createAccept = asyncHandler(
         await Conversation.findByIdAndUpdate(conversation_id, {
           latest_message: message._id,
           updated_at: new Date(),
-          state: StateEnum.ACCEPTED
+          state: StateEnum.ACCEPTED,
         })
 
         message = await (
@@ -219,7 +237,7 @@ export const createReject = asyncHandler(
         await Conversation.findByIdAndUpdate(conversation_id, {
           latest_message: message._id,
           updated_at: new Date(),
-          state: StateEnum.REJECTED
+          state: StateEnum.REJECTED,
         })
 
         message = await (
@@ -281,7 +299,7 @@ export const createComplete = asyncHandler(
         await Conversation.findByIdAndUpdate(conversation_id, {
           latest_message: message._id,
           updated_at: new Date(),
-          state: StateEnum.COMPLETED
+          state: StateEnum.COMPLETED,
         })
 
         message = await (
@@ -329,7 +347,9 @@ export const createRating = asyncHandler(
         throw new Error("Conversation not found")
       }
 
-      await User.findByIdAndUpdate(conversationObject.service_provider_id, {$push: {ratings: rating}})
+      await User.findByIdAndUpdate(conversationObject.service_provider_id, {
+        $push: { ratings: rating },
+      })
 
       let message = await Message.create({
         conversation_id: conversation_id,
@@ -345,7 +365,7 @@ export const createRating = asyncHandler(
         await Conversation.findByIdAndUpdate(conversation_id, {
           latest_message: message._id,
           updated_at: new Date(),
-          state: StateEnum.RATED
+          state: StateEnum.RATED,
         })
 
         message = await (
@@ -367,4 +387,3 @@ export const createRating = asyncHandler(
     }
   }
 )
-

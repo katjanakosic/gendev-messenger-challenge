@@ -1,4 +1,12 @@
-import React, { ChangeEvent, useEffect, useState } from "react"
+import React, {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
+import { FaFile } from "react-icons/fa"
+import { HiMiniPhoto } from "react-icons/hi2"
 import {
   Box,
   Button,
@@ -12,6 +20,8 @@ import {
   Menu,
   MenuList,
   MenuButton,
+  MenuItem,
+  MenuDivider,
 } from "@chakra-ui/react"
 import { Image } from "@chakra-ui/image"
 import chatting from "../../assets/Chat-amico.svg"
@@ -44,6 +54,8 @@ export const SingleConversation = () => {
   const [typing, setTyping] = useState(false)
   const [isTyping, setIsTyping] = useState(false)
   const [rating, setRating] = useState(0)
+  const [pageNumber, setPageNumber] = useState(1)
+  const [hasMore, setHasMore] = useState(false)
 
   const toast = useToast()
 
@@ -57,8 +69,10 @@ export const SingleConversation = () => {
     setFetchAgain,
   } = ConversationState()
 
-  const fetchMessages = async () => {
+  const fetchMessages = async (page: number) => {
     if (!selectedConversation) return
+
+    console.log(pageNumber)
     try {
       const config = {
         headers: {
@@ -69,11 +83,18 @@ export const SingleConversation = () => {
       setLoading(true)
 
       const { data } = await axios.get(
-        `api/message/${selectedConversation._id}`,
+        `api/message/${selectedConversation._id}?page=${page}`,
         config
       )
 
-      setMessages(data)
+      setMessages((prevMessages) => {
+        const messages = [...data.reverse(), ...prevMessages]
+        return Array.from(new Set(messages.map((message) => message._id)))
+          .map((_id) => messages.find((message) => message._id === _id))
+          .filter((message) => message !== undefined) as MessageDto[]
+      })
+      console.log(data)
+      setHasMore(data.length > 0)
       setLoading(false)
       socket.emit("join conversation", selectedConversation._id)
     } catch (error) {
@@ -86,6 +107,14 @@ export const SingleConversation = () => {
         position: "bottom",
       })
     }
+  }
+
+  const loadMore = () => {
+    if (loading || !hasMore) return
+    setPageNumber((prevPage) => {
+      fetchMessages(prevPage + 1)
+      return prevPage + 1
+    })
   }
 
   const sendMessage = async (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -115,7 +144,6 @@ export const SingleConversation = () => {
         setNewMessage("")
         setMessages([...messages, data])
         setFetchAgain(!fetchAgain)
-        console.log(data)
         socket.emit("new message", data)
       } catch (error) {
         toast({
@@ -157,9 +185,16 @@ export const SingleConversation = () => {
   }
 
   useEffect(() => {
-    fetchMessages()
+    setHasMore(true)
+    setMessages([])
+    fetchMessages(1)
+    // setPageNumber((prevPageNumber) => prevPageNumber + 1)
     selectedConversationCompare = selectedConversation
   }, [selectedConversation])
+
+  // useEffect(() => {
+  //   fetchMessages()
+  // }, [pageNumber])
 
   useEffect(() => {
     socket = io(ENDPOINT)
@@ -324,6 +359,57 @@ export const SingleConversation = () => {
     }
   }
 
+  const uploadFile = () => {
+    // setPicLoading(true)
+    // if (!pics || pics.length === 0) {
+    //   toast({
+    //     title: "Please select an image",
+    //     status: "warning",
+    //     duration: 5000,
+    //     isClosable: true,
+    //     position: "bottom",
+    //   })
+    //   setPicLoading(false)
+    //   return
+    // }
+    // const selectedFile = pics[0]
+    // if (
+    //   selectedFile.type === "image/jpeg" ||
+    //   selectedFile.type === "image/png"
+    // ) {
+    //   const data = new FormData()
+    //   data.append("file", selectedFile)
+    //   data.append("upload_preset", "chat-app")
+    //   data.append("cloud_name", "dpq6lqjdw")
+    //   fetch("https://api.cloudinary.com/v1_1/dpq6lqjdw/image/upload", {
+    //     method: "post",
+    //     body: data,
+    //   })
+    //     .then((res) => res.json())
+    //     .then((data) => {
+    //       setPfp(data.url.toString())
+    //       console.log(data.url.toString())
+    //       setPicLoading(false)
+    //     })
+    //     .catch((err) => {
+    //       console.log(err)
+    //       setPicLoading(false)
+    //     })
+    // } else {
+    //   toast({
+    //     title: "Please select an image",
+    //     status: "warning",
+    //     duration: 5000,
+    //     isClosable: true,
+    //     position: "bottom",
+    //   })
+    //   setPicLoading(false)
+    //   return
+    // }
+  }
+
+  const uploadPicture = () => {}
+
   return (
     <>
       {selectedConversation ? (
@@ -460,7 +546,11 @@ export const SingleConversation = () => {
               />
             ) : (
               <Box className="messages">
-                <ScrollableConversation messages={messages} isTyping={isTyping} />
+                <ScrollableConversation
+                  messages={messages}
+                  isTyping={isTyping}
+                  loadMore={loadMore}
+                />
               </Box>
             )}
             <FormControl onKeyDown={sendMessage} isRequired mt="3">
@@ -503,13 +593,35 @@ export const SingleConversation = () => {
                     selectedConversation.state === StateEnum.RATED
                   }
                 />
-                <IconButton
-                  ml={2}
-                  aria-label="Attach files"
-                  icon={<AttachmentIcon />}
-                  onClick={() => {}}
-                  isDisabled={selectedConversation.state !== StateEnum.ACCEPTED}
-                />
+                <Menu>
+                  <MenuButton
+                    as={IconButton}
+                    ml={2}
+                    aria-label="Attach files"
+                    icon={<AttachmentIcon />}
+                    onClick={() => {}}
+                    isDisabled={
+                      selectedConversation.state !== StateEnum.ACCEPTED
+                    }
+                  />
+                  <MenuList width="auto">
+                    <MenuItem
+                      onClick={() => {
+                        uploadPicture()
+                      }}
+                    >
+                      Upload Picture
+                    </MenuItem>
+                    <MenuDivider />
+                    <MenuItem
+                      onClick={() => {
+                        uploadFile()
+                      }}
+                    >
+                      Upload File
+                    </MenuItem>
+                  </MenuList>
+                </Menu>
               </Box>
             </FormControl>
           </Box>

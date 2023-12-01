@@ -1,13 +1,24 @@
 import React from "react"
 import { MessageDto } from "../../types/MessageDto"
 import ScrollableFeed from "react-scrollable-feed"
-import { Box } from "@chakra-ui/react"
+import { Box, Button } from "@chakra-ui/react"
 import { ConversationState } from "../../context/ConversationContextProvider"
 
-export const ScrollableConversation = ({ messages, isTyping }: { messages: MessageDto[], isTyping: boolean }) => {
+export const ScrollableConversation = ({
+  messages,
+  isTyping,
+  loadMore,
+}: {
+  messages: MessageDto[]
+  isTyping: boolean
+  loadMore: () => void
+}) => {
   const { user } = ConversationState()
   return (
     <ScrollableFeed>
+      <Box width="100%" display="flex" justifyContent="center">
+        <Button onClick={loadMore}>Load more...</Button>
+      </Box>
       {messages &&
         messages.map((message) => {
           const isCurrentUser = message.sender_id._id === user?._id
@@ -20,6 +31,7 @@ export const ScrollableConversation = ({ messages, isTyping }: { messages: Messa
               key={message._id}
               justifyContent={alignSelf}
               mb={2}
+              // ref={index === 0 ? lastMessageRef as any: undefined}
             >
               <Box
                 style={{
