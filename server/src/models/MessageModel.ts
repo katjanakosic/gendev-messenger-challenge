@@ -7,7 +7,9 @@ export enum MessageTypeEnum {
   ACCEPT_QUOTE_MESSAGE = "accept_quote_offer",
   STANDARD_MESSAGE = "standard_message",
   COMPLETE_MESSAGE = "complete_message",
-  RATE_MESSAGE = "rate_message"
+  RATE_MESSAGE = "rate_message",
+  PICTURE = "picture",
+  DOCUMENT = "document"
 }
 
 export interface MessageDocument extends mongoose.Document {

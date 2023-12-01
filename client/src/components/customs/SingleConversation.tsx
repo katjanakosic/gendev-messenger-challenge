@@ -22,6 +22,7 @@ import {
   MenuButton,
   MenuItem,
   MenuDivider,
+  MenuGroup,
 } from "@chakra-ui/react"
 import { Image } from "@chakra-ui/image"
 import chatting from "../../assets/Chat-amico.svg"
@@ -117,8 +118,8 @@ export const SingleConversation = () => {
     })
   }
 
-  const sendMessage = async (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && newMessage) {
+  const sendMessage = async (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event && event.key === "Enter" && newMessage) {
       socket.emit("stop typing", {
         room: selectedConversation?._id,
         user_id: user?._id,
@@ -359,56 +360,114 @@ export const SingleConversation = () => {
     }
   }
 
-  const uploadFile = () => {
-    // setPicLoading(true)
-    // if (!pics || pics.length === 0) {
-    //   toast({
-    //     title: "Please select an image",
-    //     status: "warning",
-    //     duration: 5000,
-    //     isClosable: true,
-    //     position: "bottom",
-    //   })
-    //   setPicLoading(false)
-    //   return
-    // }
-    // const selectedFile = pics[0]
-    // if (
-    //   selectedFile.type === "image/jpeg" ||
-    //   selectedFile.type === "image/png"
-    // ) {
-    //   const data = new FormData()
-    //   data.append("file", selectedFile)
-    //   data.append("upload_preset", "chat-app")
-    //   data.append("cloud_name", "dpq6lqjdw")
-    //   fetch("https://api.cloudinary.com/v1_1/dpq6lqjdw/image/upload", {
-    //     method: "post",
-    //     body: data,
-    //   })
-    //     .then((res) => res.json())
-    //     .then((data) => {
-    //       setPfp(data.url.toString())
-    //       console.log(data.url.toString())
-    //       setPicLoading(false)
-    //     })
-    //     .catch((err) => {
-    //       console.log(err)
-    //       setPicLoading(false)
-    //     })
-    // } else {
-    //   toast({
-    //     title: "Please select an image",
-    //     status: "warning",
-    //     duration: 5000,
-    //     isClosable: true,
-    //     position: "bottom",
-    //   })
-    //   setPicLoading(false)
-    //   return
-    // }
+  const sendFile = async (url: string, message_type: MessageTypeEnum) => {
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }
+
+      const { data } = await axios.post(
+        "/api/message",
+        {
+          text: url,
+          conversation_id: selectedConversation?._id,
+          message_type: message_type,
+        },
+        config
+      )
+
+      setNewMessage("")
+      setMessages([...messages, data])
+      setFetchAgain(!fetchAgain)
+      socket.emit("new message", data)
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to send the Message",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      })
+    }
   }
 
-  const uploadPicture = () => {}
+  const uploadPicture = (pics: FileList | null) => {
+    if (!pics || pics.length === 0) {
+      toast({
+        title: "Please select an image",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      })
+      return
+    }
+    const selectedFile = pics[0]
+    if (
+      selectedFile.type === "image/jpeg" ||
+      selectedFile.type === "image/png"
+    ) {
+      const data = new FormData()
+      data.append("file", selectedFile)
+      data.append("upload_preset", "chat-app")
+      data.append("cloud_name", "dpq6lqjdw")
+      fetch("https://api.cloudinary.com/v1_1/dpq6lqjdw/image/upload", {
+        method: "post",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data.url.toString())
+          sendFile(data.url.toString(), MessageTypeEnum.PICTURE)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    } else {
+      toast({
+        title: "Please select an image",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      })
+      return
+    }
+  }
+
+  const uploadDocument = (files: FileList | null) => {
+    if (!files || files.length === 0) {
+      toast({
+        title: "Please select a Document",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      })
+      return
+    }
+    const selectedFile = files[0]
+    const data = new FormData()
+    data.append("file", selectedFile)
+    data.append("upload_preset", "chat-app")
+    data.append("cloud_name", "dpq6lqjdw")
+    fetch("https://api.cloudinary.com/v1_1/dpq6lqjdw/image/upload", {
+      method: "post",
+      body: data,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data.url.toString())
+        sendFile(data.url.toString(), MessageTypeEnum.DOCUMENT)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
 
   return (
     <>
@@ -605,21 +664,42 @@ export const SingleConversation = () => {
                     }
                   />
                   <MenuList width="auto">
-                    <MenuItem
-                      onClick={() => {
-                        uploadPicture()
-                      }}
-                    >
-                      Upload Picture
-                    </MenuItem>
+                    <MenuGroup>
+                      <MenuItem>
+                        <Input
+                          type="file"
+                          height="50%"
+                          width="100%"
+                          position="absolute"
+                          top="0"
+                          left="0"
+                          opacity="0"
+                          aria-hidden="true"
+                          accept="image/*"
+                          onChange={(e) => uploadPicture(e.target.files)}
+                        />
+                        <Text>Upload Picture</Text>
+                      </MenuItem>
+                    </MenuGroup>
+
                     <MenuDivider />
-                    <MenuItem
-                      onClick={() => {
-                        uploadFile()
-                      }}
-                    >
-                      Upload File
-                    </MenuItem>
+                    <MenuGroup>
+                      <MenuItem>
+                        <Input
+                          type="file"
+                          height="50%"
+                          width="100%"
+                          position="absolute"
+                          top="50%"
+                          left="0"
+                          opacity="0"
+                          aria-hidden="true"
+                          accept="application/pdf"
+                          onChange={(e) => uploadDocument(e.target.files)}
+                        />
+                        <Text>Upload Document</Text>
+                      </MenuItem>
+                    </MenuGroup>
                   </MenuList>
                 </Menu>
               </Box>

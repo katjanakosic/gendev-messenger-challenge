@@ -1,7 +1,7 @@
 import React from "react"
-import { MessageDto } from "../../types/MessageDto"
+import { MessageDto, MessageTypeEnum } from "../../types/MessageDto"
 import ScrollableFeed from "react-scrollable-feed"
-import { Box, Button } from "@chakra-ui/react"
+import { Box, Button, Image } from "@chakra-ui/react"
 import { ConversationState } from "../../context/ConversationContextProvider"
 
 export const ScrollableConversation = ({
@@ -41,7 +41,11 @@ export const ScrollableConversation = ({
                   maxWidth: "75%",
                 }}
               >
-                {message.text}
+                {message.message_type === MessageTypeEnum.PICTURE ? (
+                  <Image src={message.text} alt={message.text} />
+                ) : (
+                  message.text
+                )}
               </Box>
             </Box>
           )

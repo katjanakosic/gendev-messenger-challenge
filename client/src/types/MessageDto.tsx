@@ -8,6 +8,8 @@ export enum MessageTypeEnum {
   STANDARD_MESSAGE = "standard_message",
   COMPLETE_MESSAGE = "complete_message",
   RATE_MESSAGE = "rate_message",
+  PICTURE = "picture",
+  DOCUMENT = "document",
 }
 
 export type MessageDto = {
